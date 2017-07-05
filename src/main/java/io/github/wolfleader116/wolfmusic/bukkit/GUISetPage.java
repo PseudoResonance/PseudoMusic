@@ -35,11 +35,24 @@ public class GUISetPage {
 						inv.setItem(ConfigOptions.nextSongInt, newStack(ConfigOptions.nextSongMaterial, 1, "§2§f" + ConfigOptions.nextSongName.replace("{name}", nextSong)));
 					}
 				}
-				if (p.hasPermission("wolfmusic.stop")) {
-					inv.setItem(ConfigOptions.stopInt, newStack(ConfigOptions.stopMaterial, 1, "§3§f" + ConfigOptions.stopName.replace("{name}", currentSong)));
+				if (JukeboxController.isPlaying(p)) {
+					if (p.hasPermission("wolfmusic.stop")) {
+						inv.setItem(ConfigOptions.stopInt, newStack(ConfigOptions.stopMaterial, 1, "§3§f" + ConfigOptions.stopName.replace("{name}", currentSong)));
+					}
+				} else {
+					if (p.hasPermission("wolfmusic.play")) {
+						inv.setItem(ConfigOptions.stopInt, newStack(ConfigOptions.playMaterial, 1, "§4§f" + ConfigOptions.playName.replace("{name}", currentSong)));
+					}
+				}
+				if (p.hasPermission("wolfmusic.repeat")) {
+					if (JukeboxController.isRepeating(p)) {
+						inv.setItem(ConfigOptions.repeatInt, newStack(ConfigOptions.stopRepeatMaterial, 1, "§5§f" + ConfigOptions.stopRepeatName.replace("{name}", currentSong)));
+					} else {
+						inv.setItem(ConfigOptions.repeatInt, newStack(ConfigOptions.repeatMaterial, 1, "§6§f" + ConfigOptions.repeatName.replace("{name}", currentSong)));
+					}
 				}
 				if (songs.length >= 45) {
-					inv.setItem(ConfigOptions.nextPageInt, newStack(ConfigOptions.nextPageMaterial, 1, "§5§f" + ConfigOptions.nextPageName.replace("{page}", "2")));
+					inv.setItem(ConfigOptions.nextPageInt, newStack(ConfigOptions.nextPageMaterial, 1, "§8§f" + ConfigOptions.nextPageName.replace("{page}", "2")));
 				}
 				for (int i = 0; i <= 44; i++) {
 					if (i < songs.length) {
@@ -55,11 +68,24 @@ public class GUISetPage {
 						inv.setItem(ConfigOptions.nextSongInt, newStack(ConfigOptions.nextSongMaterial, 1, "§2§f" + ConfigOptions.nextSongName.replace("{name}", nextSong)));
 					}
 				}
-				if (p.hasPermission("wolfmusic.stop")) {
-					inv.setItem(ConfigOptions.stopInt, newStack(ConfigOptions.stopMaterial, 1, "§3§f" + ConfigOptions.stopName.replace("{name}", currentSong)));
+				if (JukeboxController.isPlaying(p)) {
+					if (p.hasPermission("wolfmusic.stop")) {
+						inv.setItem(ConfigOptions.stopInt, newStack(ConfigOptions.stopMaterial, 1, "§3§f" + ConfigOptions.stopName.replace("{name}", currentSong)));
+					}
+				} else {
+					if (p.hasPermission("wolfmusic.play")) {
+						inv.setItem(ConfigOptions.stopInt, newStack(ConfigOptions.playMaterial, 1, "§4§f" + ConfigOptions.playName.replace("{name}", currentSong)));
+					}
+				}
+				if (p.hasPermission("wolfmusic.repeat")) {
+					if (JukeboxController.isRepeating(p)) {
+						inv.setItem(ConfigOptions.repeatInt, newStack(ConfigOptions.stopRepeatMaterial, 1, "§5§f" + ConfigOptions.stopRepeatName.replace("{name}", currentSong)));
+					} else {
+						inv.setItem(ConfigOptions.repeatInt, newStack(ConfigOptions.repeatMaterial, 1, "§6§f" + ConfigOptions.repeatName.replace("{name}", currentSong)));
+					}
 				}
 				if (songs.length >= 45) {
-					inv.setItem(ConfigOptions.lastPageInt, newStack(ConfigOptions.lastPageMaterial, 1, "§4§f" + ConfigOptions.lastPageName.replace("{page}", Integer.toString(page - 1))));
+					inv.setItem(ConfigOptions.lastPageInt, newStack(ConfigOptions.lastPageMaterial, 1, "§7§f" + ConfigOptions.lastPageName.replace("{page}", Integer.toString(page - 1))));
 				}
 				int loc = 8;
 				for (int i = (page - 1) * 45; i <= ((page - 1) * 45) + 44; i++) {
@@ -77,12 +103,25 @@ public class GUISetPage {
 						inv.setItem(ConfigOptions.nextSongInt, newStack(ConfigOptions.nextSongMaterial, 1, "§2§f" + ConfigOptions.nextSongName.replace("{name}", nextSong)));
 					}
 				}
-				if (p.hasPermission("wolfmusic.stop")) {
-					inv.setItem(ConfigOptions.stopInt, newStack(ConfigOptions.stopMaterial, 1, "§3§f" + ConfigOptions.stopName.replace("{name}", currentSong)));
+				if (JukeboxController.isPlaying(p)) {
+					if (p.hasPermission("wolfmusic.stop")) {
+						inv.setItem(ConfigOptions.stopInt, newStack(ConfigOptions.stopMaterial, 1, "§3§f" + ConfigOptions.stopName.replace("{name}", currentSong)));
+					}
+				} else {
+					if (p.hasPermission("wolfmusic.play")) {
+						inv.setItem(ConfigOptions.stopInt, newStack(ConfigOptions.playMaterial, 1, "§4§f" + ConfigOptions.playName.replace("{name}", currentSong)));
+					}
+				}
+				if (p.hasPermission("wolfmusic.repeat")) {
+					if (JukeboxController.isRepeating(p)) {
+						inv.setItem(ConfigOptions.repeatInt, newStack(ConfigOptions.stopRepeatMaterial, 1, "§5§f" + ConfigOptions.stopRepeatName.replace("{name}", currentSong)));
+					} else {
+						inv.setItem(ConfigOptions.repeatInt, newStack(ConfigOptions.repeatMaterial, 1, "§6§f" + ConfigOptions.repeatName.replace("{name}", currentSong)));
+					}
 				}
 				if (songs.length >= 45) {
-					inv.setItem(ConfigOptions.lastPageInt, newStack(ConfigOptions.lastPageMaterial, 1, "§4§f" + ConfigOptions.lastPageName.replace("{page}", Integer.toString(page - 1))));
-					inv.setItem(ConfigOptions.nextPageInt, newStack(ConfigOptions.nextPageMaterial, 1, "§5§f" + ConfigOptions.nextPageName.replace("{page}", Integer.toString(page + 1))));
+					inv.setItem(ConfigOptions.lastPageInt, newStack(ConfigOptions.lastPageMaterial, 1, "§7§f" + ConfigOptions.lastPageName.replace("{page}", Integer.toString(page - 1))));
+					inv.setItem(ConfigOptions.nextPageInt, newStack(ConfigOptions.nextPageMaterial, 1, "§8§f" + ConfigOptions.nextPageName.replace("{page}", Integer.toString(page + 1))));
 				}
 				int loc = 8;
 				for (int i = (page - 1) * 45; i <= ((page - 1) * 45) + 44; i++) {

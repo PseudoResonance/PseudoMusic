@@ -1,6 +1,7 @@
 package io.github.wolfleader116.wolfmusic.bukkit;
 
 import org.bukkit.Bukkit;
+import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
@@ -17,14 +18,23 @@ public class Jukebox {
 	protected boolean playing = false;
 	protected BossBar bossBar;
 	protected BarUpdate barUpdate;
+	protected boolean repeat = false;
+	protected boolean stopped = true;
 	
 	Jukebox(Player player) {
 		this.player = player;
+		String barMessage = ConfigOptions.barMessage;
+		barMessage = barMessage.replace("{name}", "None");
+		barMessage = barMessage.replace("{cname}", "None");
+		barMessage = barMessage.replace("{time}", "0:00");
+		barMessage = barMessage.replace("{total}", "0:00");
+		bossBar = Bukkit.getServer().createBossBar(barMessage, BarColor.WHITE, BarStyle.SOLID);
 		nextSong();
 	}
 
 	public void setSong(SongFile sf) {
 		kill();
+		stopped = false;
 		songFile = sf;
 		songPlayer = new RadioSongPlayer(songFile.getSong());
 		songPlayer.setAutoDestroy(true);
@@ -41,7 +51,8 @@ public class Jukebox {
 			String totalS = format(total);
 			barMessage = barMessage.replace("{time}", nowS);
 			barMessage = barMessage.replace("{total}", totalS);
-			bossBar = Bukkit.getServer().createBossBar(barMessage, songFile.getBarColor(), BarStyle.SOLID);
+			bossBar.setTitle(barMessage);
+			bossBar.setColor(songFile.getBarColor());
 			bossBar.setProgress(0.0);
 			bossBar.addPlayer(player);
 			bossBar.setVisible(true);
@@ -76,6 +87,10 @@ public class Jukebox {
 		return songFile;
 	}
 	
+	public boolean isRepeating() {
+		return repeat;
+	}
+	
 	public void kill() {
 		if (ConfigOptions.bossBar) {
 			if (barUpdate != null) {
@@ -89,8 +104,8 @@ public class Jukebox {
 			songPlayer.destroy();
 		}
 		songPlayer = null;
-		songFile = null;
 		playing = false;
+		stopped = true;
 	}
 	
 	public String nextSongName() {
@@ -131,7 +146,152 @@ public class Jukebox {
 		return "None";
 	}
 	
+	public void nextAutoSong() {
+		if (!stopped) {
+			if (WolfMusic.songs.size() >= 1) {
+				if (songPlayer != null) {
+					songPlayer.destroy();
+				}
+				if (ConfigOptions.bossBar) {
+					if (barUpdate != null) {
+						barUpdate.cancel();
+					}
+				}
+				if (bossBar != null) {
+					bossBar.setVisible(false);
+				}
+				int i = 0;
+				if (repeat) {
+					if (songFile != null) {
+						i = WolfMusic.songs.indexOf(songFile);
+						if (i >= WolfMusic.songs.size()) {
+							i = 0;
+						}
+					}
+					if (WolfMusic.songs.size() == 1) {
+						i = 0;
+					}
+				} else {
+					if (songFile != null) {
+						i = WolfMusic.songs.indexOf(songFile);
+						i++;
+						if (i >= WolfMusic.songs.size()) {
+							i = 0;
+						}
+					}
+					if (WolfMusic.songs.size() == 1) {
+						i = 0;
+					}
+				}
+				songFile = WolfMusic.getSongs()[i];
+				songPlayer = new RadioSongPlayer(songFile.getSong());
+				songPlayer.setAutoDestroy(true);
+				songPlayer.addPlayer(player);
+				songPlayer.setPlaying(true);
+				playing = true;
+				if (ConfigOptions.bossBar) {
+					String barMessage = ConfigOptions.barMessage;
+					barMessage = barMessage.replace("{name}", songFile.getName());
+					barMessage = barMessage.replace("{cname}", songFile.getColor() + songFile.getName());
+					int now = (int) Math.ceil(((double) songPlayer.getTick()) / songPlayer.getSong().getSpeed());
+					int total = (int) Math.ceil((double) songPlayer.getSong().getLength() / songPlayer.getSong().getSpeed());
+					String nowS = format(now);
+					String totalS = format(total);
+					barMessage = barMessage.replace("{time}", nowS);
+					barMessage = barMessage.replace("{total}", totalS);
+					bossBar.setTitle(barMessage);
+					bossBar.setColor(songFile.getBarColor());
+					bossBar.setProgress(0.0);
+					bossBar.addPlayer(player);
+					bossBar.setVisible(true);
+					if (ConfigOptions.barVisibility != 0) {
+						Bukkit.getScheduler().scheduleSyncDelayedTask(WolfMusic.plugin, new Runnable() {
+							public void run() {
+								bossBar.setVisible(false);
+							}
+						}, ConfigOptions.barVisibility);
+					} else {
+						barUpdate = new BarUpdate(this);
+						barUpdate.runTaskTimer(WolfMusic.plugin, ConfigOptions.barUpdate, ConfigOptions.barUpdate);
+					}
+				}
+				if (ConfigOptions.title) {
+					String titleMessage = ConfigOptions.titleMessage;
+					titleMessage = titleMessage.replace("{name}", songFile.getName());
+					titleMessage = titleMessage.replace("{cname}", songFile.getColor() + songFile.getName());
+					player.sendTitle("", titleMessage, ConfigOptions.titleFade, ConfigOptions.titleVisibility, ConfigOptions.titleFade);
+				}
+			}
+		}
+	}
+	
+	public void start() {
+		stopped = false;
+		if (WolfMusic.songs.size() >= 1) {
+			if (songPlayer != null) {
+				songPlayer.destroy();
+			}
+			if (ConfigOptions.bossBar) {
+				if (barUpdate != null) {
+					barUpdate.cancel();
+				}
+			}
+			if (bossBar != null) {
+				bossBar.setVisible(false);
+			}
+			int i = 0;
+			if (songFile != null) {
+				i = WolfMusic.songs.indexOf(songFile);
+				if (i >= WolfMusic.songs.size()) {
+					i = 0;
+				}
+			}
+			if (WolfMusic.songs.size() == 1) {
+				i = 0;
+			}
+			songFile = WolfMusic.getSongs()[i];
+			songPlayer = new RadioSongPlayer(songFile.getSong());
+			songPlayer.setAutoDestroy(true);
+			songPlayer.addPlayer(player);
+			songPlayer.setPlaying(true);
+			playing = true;
+			if (ConfigOptions.bossBar) {
+				String barMessage = ConfigOptions.barMessage;
+				barMessage = barMessage.replace("{name}", songFile.getName());
+				barMessage = barMessage.replace("{cname}", songFile.getColor() + songFile.getName());
+				int now = (int) Math.ceil(((double) songPlayer.getTick()) / songPlayer.getSong().getSpeed());
+				int total = (int) Math.ceil((double) songPlayer.getSong().getLength() / songPlayer.getSong().getSpeed());
+				String nowS = format(now);
+				String totalS = format(total);
+				barMessage = barMessage.replace("{time}", nowS);
+				barMessage = barMessage.replace("{total}", totalS);
+				bossBar.setTitle(barMessage);
+				bossBar.setColor(songFile.getBarColor());
+				bossBar.setProgress(0.0);
+				bossBar.addPlayer(player);
+				bossBar.setVisible(true);
+				if (ConfigOptions.barVisibility != 0) {
+					Bukkit.getScheduler().scheduleSyncDelayedTask(WolfMusic.plugin, new Runnable() {
+						public void run() {
+							bossBar.setVisible(false);
+						}
+					}, ConfigOptions.barVisibility);
+				} else {
+					barUpdate = new BarUpdate(this);
+					barUpdate.runTaskTimer(WolfMusic.plugin, ConfigOptions.barUpdate, ConfigOptions.barUpdate);
+				}
+			}
+			if (ConfigOptions.title) {
+				String titleMessage = ConfigOptions.titleMessage;
+				titleMessage = titleMessage.replace("{name}", songFile.getName());
+				titleMessage = titleMessage.replace("{cname}", songFile.getColor() + songFile.getName());
+				player.sendTitle("", titleMessage, ConfigOptions.titleFade, ConfigOptions.titleVisibility, ConfigOptions.titleFade);
+			}
+		}
+	}
+	
 	public void nextSong() {
+		stopped = false;
 		if (WolfMusic.songs.size() >= 1) {
 			if (songPlayer != null) {
 				songPlayer.destroy();
@@ -171,7 +331,8 @@ public class Jukebox {
 				String totalS = format(total);
 				barMessage = barMessage.replace("{time}", nowS);
 				barMessage = barMessage.replace("{total}", totalS);
-				bossBar = Bukkit.getServer().createBossBar(barMessage, songFile.getBarColor(), BarStyle.SOLID);
+				bossBar.setTitle(barMessage);
+				bossBar.setColor(songFile.getBarColor());
 				bossBar.setProgress(0.0);
 				bossBar.addPlayer(player);
 				bossBar.setVisible(true);
@@ -196,6 +357,7 @@ public class Jukebox {
 	}
 	
 	public void lastSong() {
+		stopped = false;
 		if (WolfMusic.songs.size() >= 1) {
 			if (songPlayer != null) {
 				songPlayer.destroy();
@@ -235,7 +397,8 @@ public class Jukebox {
 				String totalS = format(total);
 				barMessage = barMessage.replace("{time}", nowS);
 				barMessage = barMessage.replace("{total}", totalS);
-				bossBar = Bukkit.getServer().createBossBar(barMessage, songFile.getBarColor(), BarStyle.SOLID);
+				bossBar.setTitle(barMessage);
+				bossBar.setColor(songFile.getBarColor());
 				bossBar.setProgress(0.0);
 				bossBar.addPlayer(player);
 				bossBar.setVisible(true);
@@ -273,7 +436,7 @@ public class Jukebox {
 			if (ConfigOptions.autoStart) {
 				Bukkit.getScheduler().scheduleSyncDelayedTask(WolfMusic.plugin, new Runnable() {
 					public void run() {
-						nextSong();
+						nextAutoSong();
 					}
 				}, d);
 			}
@@ -293,6 +456,10 @@ public class Jukebox {
 			int seconds = i - secondsInMinutes;
 			return String.valueOf(minutes) + ":" + String.valueOf(seconds);
 		}
+	}
+	
+	public void setRepeat(boolean value) {
+		repeat = value;
 	}
 
 }

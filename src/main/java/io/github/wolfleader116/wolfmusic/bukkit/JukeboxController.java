@@ -43,10 +43,18 @@ public class JukeboxController {
 	public static void start() {
 		if (ConfigOptions.playerType == PlayerType.PRIVATE) {
 			for (Jukebox j : jukeboxes.values()) {
-				j.nextSong();
+				j.start();
 			}
 		} else {
-			global.nextSong();
+			global.start();
+		}
+	}
+	
+	public static void startPlayer(Player p) {
+		if (ConfigOptions.playerType == PlayerType.PRIVATE) {
+			jukeboxes.get(p).start();
+		} else {
+			global.start();
 		}
 	}
 	
@@ -71,6 +79,14 @@ public class JukeboxController {
 			jukeboxes.get(p).lastSong();
 		} else {
 			global.lastSong();
+		}
+	}
+	
+	public static void setRepeat(Player p, boolean value) {
+		if (ConfigOptions.playerType == PlayerType.PRIVATE) {
+			jukeboxes.get(p).setRepeat(value);
+		} else {
+			global.setRepeat(value);
 		}
 	}
 	
@@ -125,6 +141,14 @@ public class JukeboxController {
 			return jukeboxes.get(p).isPlaying();
 		} else {
 			return global.isPlaying();
+		}
+	}
+	
+	public static boolean isRepeating(Player p) {
+		if (ConfigOptions.playerType == PlayerType.PRIVATE) {
+			return jukeboxes.get(p).isRepeating();
+		} else {
+			return global.isRepeating();
 		}
 	}
 	

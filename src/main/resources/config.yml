@@ -3,7 +3,7 @@
 #########################
 
 #DO NOT CHANGE THIS LINE! YOUR CONFIG WILL BE RESET UPON LOADING IF THIS LINE IS EDITED!
-Version: 3
+Version: 4
 
 
 ########
@@ -70,6 +70,25 @@ StopName: "Stop Playing"
 StopItem: Barrier
 #Number between 1-9
 StopLocation: 5
+
+#Play Button
+#Replaces stop button when no music is playing
+#{name} = Song name
+PlayName: "Play {name}"
+PlayItem: Jukebox
+
+#Repeat Button
+#{name} = Song name
+RepeatName: "Repeat"
+RepeatItem: Arrow
+#Number between 1-9
+RepeatLocation: 2
+
+#Stop Repeat Button
+#Replaces repeat button when music is repeating
+#{name} = Song name
+StopRepeatName: "Disable Repeat"
+StopRepeatItem: Structure_Void
 
 
 #########

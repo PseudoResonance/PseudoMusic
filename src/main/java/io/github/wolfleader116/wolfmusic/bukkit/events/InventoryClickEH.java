@@ -17,65 +17,85 @@ import io.github.wolfleader116.wolfmusic.bukkit.SongFile;
 import io.github.wolfleader116.wolfmusic.bukkit.WolfMusic;
 
 public class InventoryClickEH implements Listener {
-	
+
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent e) {
-		Inventory i = e.getClickedInventory();
+		Inventory i = e.getInventory();
 		String t = i.getTitle();
 		if (t.equalsIgnoreCase(ConfigOptions.interfaceName)) {
+			e.setCancelled(true);
 			Player p = (Player) e.getWhoClicked();
 			ItemStack is = e.getCurrentItem();
-			ItemMeta im = is.getItemMeta();
-			if (im.hasDisplayName()) {
-				String name = im.getDisplayName();
-				int page = WolfMusic.getPage(p.getName());
-				if (name.startsWith("§1§f")) {
-					JukeboxController.lastSong(p);
-					p.closeInventory();
-					GUISetPage.setPage(p, page);
-					e.setCancelled(true);
-				} else if (name.startsWith("§2§f")) {
-					JukeboxController.nextSong(p);
-					p.closeInventory();
-					GUISetPage.setPage(p, page);
-					e.setCancelled(true);
-				} else if (name.startsWith("§3§f")) {
-					JukeboxController.stopSong(p);
-					p.closeInventory();
-					GUISetPage.setPage(p, page);
-					e.setCancelled(true);
-				} else if (name.startsWith("§4§f")) {
-					int o = page - 1;
-					p.closeInventory();
-					GUISetPage.setPage(p, o);
-					e.setCancelled(true);
-				} else if (name.startsWith("§5§f")) {
-					int o = page + 1;
-					p.closeInventory();
-					GUISetPage.setPage(p, o);
-					e.setCancelled(true);
-				} else if (isRecord(is)) {
-					String songName = ChatColor.stripColor(name);
-					for (SongFile sf : WolfMusic.getSongs()) {
-						if (sf.getName().equalsIgnoreCase(songName)) {
-							if (p.hasPermission("wolfmusic.play")) {
-								JukeboxController.setSong(p, sf);
-								p.closeInventory();
-								GUISetPage.setPage(p, page);
-							} else {
-								WolfMusic.message.sendPluginError(p, Errors.NO_PERMISSION, "select a song!");
-							}
+			if (is != null) {
+				ItemMeta im = is.getItemMeta();
+				if (im != null) {
+					if (im.hasDisplayName()) {
+						String name = im.getDisplayName();
+						int page = WolfMusic.getPage(p.getName());
+						if (name.startsWith("§1§f")) {
+							JukeboxController.lastSong(p);
+							p.closeInventory();
+							GUISetPage.setPage(p, page);
 							e.setCancelled(true);
+						} else if (name.startsWith("§2§f")) {
+							JukeboxController.nextSong(p);
+							p.closeInventory();
+							GUISetPage.setPage(p, page);
+							e.setCancelled(true);
+						} else if (name.startsWith("§3§f")) {
+							JukeboxController.stopSong(p);
+							p.closeInventory();
+							GUISetPage.setPage(p, page);
+							e.setCancelled(true);
+						} else if (name.startsWith("§4§f")) {
+							JukeboxController.startPlayer(p);
+							p.closeInventory();
+							GUISetPage.setPage(p, page);
+							e.setCancelled(true);
+						} else if (name.startsWith("§5§f")) {
+							JukeboxController.setRepeat(p, false);
+							p.closeInventory();
+							GUISetPage.setPage(p, page);
+							e.setCancelled(true);
+						} else if (name.startsWith("§6§f")) {
+							JukeboxController.setRepeat(p, true);
+							p.closeInventory();
+							GUISetPage.setPage(p, page);
+							e.setCancelled(true);
+						} else if (name.startsWith("§7§f")) {
+							int o = page - 1;
+							p.closeInventory();
+							GUISetPage.setPage(p, o);
+							e.setCancelled(true);
+						} else if (name.startsWith("§8§f")) {
+							int o = page + 1;
+							p.closeInventory();
+							GUISetPage.setPage(p, o);
+							e.setCancelled(true);
+						} else if (isRecord(is)) {
+							String songName = ChatColor.stripColor(name);
+							for (SongFile sf : WolfMusic.getSongs()) {
+								if (sf.getName().equalsIgnoreCase(songName)) {
+									if (p.hasPermission("wolfmusic.play")) {
+										JukeboxController.setSong(p, sf);
+										p.closeInventory();
+										GUISetPage.setPage(p, page);
+									} else {
+										WolfMusic.message.sendPluginError(p, Errors.NO_PERMISSION, "select a song!");
+									}
+									e.setCancelled(true);
+								}
+							}
 						}
 					}
 				}
 			}
 		}
 	}
-	
+
 	private static boolean isRecord(ItemStack is) {
 		String m = is.getType().name();
-		switch(m) {
+		switch (m) {
 		case "GOLD_RECORD":
 			return true;
 		case "GREEN_RECORD":

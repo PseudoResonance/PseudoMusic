@@ -21,6 +21,7 @@ import io.github.wolfleader116.wolfapi.bukkit.WolfPlugin;
 import io.github.wolfleader116.wolfmusic.bukkit.commands.BrowseSC;
 import io.github.wolfleader116.wolfmusic.bukkit.commands.PlaySC;
 import io.github.wolfleader116.wolfmusic.bukkit.commands.ReloadSC;
+import io.github.wolfleader116.wolfmusic.bukkit.commands.RepeatSC;
 import io.github.wolfleader116.wolfmusic.bukkit.commands.ResetSC;
 import io.github.wolfleader116.wolfmusic.bukkit.commands.StopSC;
 import io.github.wolfleader116.wolfmusic.bukkit.completers.WolfMusicTC;
@@ -84,6 +85,7 @@ public class WolfMusic extends WolfPlugin implements Listener {
 		subCommands.put("browse", new BrowseSC());
 		subCommands.put("play", new PlaySC());
 		subCommands.put("stop", new StopSC());
+		subCommands.put("repeat", new RepeatSC());
 	}
 
 	private void initializeTabcompleters() {
@@ -104,6 +106,7 @@ public class WolfMusic extends WolfPlugin implements Listener {
 		commandDescriptions.add(new CommandDescription("wolfmusic browse", "Opens a GUI of all songs", "wolfmusic.browse"));
 		commandDescriptions.add(new CommandDescription("wolfmusic play", "Starts the player", "wolfmusic.play"));
 		commandDescriptions.add(new CommandDescription("wolfmusic stop", "Stops the player", "wolfmusic.stop"));
+		commandDescriptions.add(new CommandDescription("wolfmusic repeat", "Enables/disables repeat", "wolfmusic.repeat"));
 	}
 	
 	public static SongFile[] getSongs() {

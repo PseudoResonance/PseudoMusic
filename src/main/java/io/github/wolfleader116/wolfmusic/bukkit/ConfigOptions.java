@@ -37,6 +37,13 @@ public class ConfigOptions implements ConfigOption {
 	public static Material stopMaterial = Material.BARRIER;
 	public static String stopName = "Stop Playing";
 	public static int stopInt = 4;
+	public static Material playMaterial = Material.JUKEBOX;
+	public static String playName = "Play {name}";
+	public static Material repeatMaterial = Material.ARROW;
+	public static String repeatName = "Repeat";
+	public static int repeatInt = 2;
+	public static Material stopRepeatMaterial = Material.STRUCTURE_VOID;
+	public static String stopRepeatName = "Disable Repeat";
 	public static boolean bossBar = true;
 	public static long barVisibility = 0;
 	public static String barMessage = "&c&lPlaying {cname} &3&l - &f{time} &c&l- &f{total}";
@@ -91,6 +98,7 @@ public class ConfigOptions implements ConfigOption {
 	}
 	
 	public void reloadConfig() {
+		boolean locationError = false;
 		try {
 			String s = WolfMusic.plugin.getConfig().getString("PlayerType");
 			if (s.equalsIgnoreCase("global")) {
@@ -158,6 +166,7 @@ public class ConfigOptions implements ConfigOption {
 		if (lastPageLocation >= 1 && lastPageLocation <= 9) {
 			lastPageInt = lastPageLocation - 1;
 		} else {
+			locationError = true;
 			Message.sendConsoleMessage(ChatColor.RED + "Invalid location in config for LastPage!");
 		}
 		try {
@@ -170,6 +179,7 @@ public class ConfigOptions implements ConfigOption {
 		if (nextPageLocation >= 1 && nextPageLocation <= 9 && nextPageLocation != lastPageLocation) {
 			nextPageInt = nextPageLocation - 1;
 		} else {
+			locationError = true;
 			Message.sendConsoleMessage(ChatColor.RED + "Invalid location in config for NextPage!");
 		}
 		try {
@@ -182,6 +192,7 @@ public class ConfigOptions implements ConfigOption {
 		if (lastSongLocation >= 1 && lastSongLocation <= 9 && lastSongLocation != lastPageLocation && lastSongLocation != nextPageLocation) {
 			lastSongInt = lastSongLocation - 1;
 		} else {
+			locationError = true;
 			Message.sendConsoleMessage(ChatColor.RED + "Invalid location in config for LastSong!");
 		}
 		try {
@@ -194,6 +205,7 @@ public class ConfigOptions implements ConfigOption {
 		if (nextSongLocation >= 1 && nextSongLocation <= 9 && nextSongLocation != lastPageLocation && nextSongLocation != nextPageLocation && nextSongLocation != lastSongLocation) {
 			nextSongInt = nextSongLocation - 1;
 		} else {
+			locationError = true;
 			Message.sendConsoleMessage(ChatColor.RED + "Invalid location in config for NextSong!");
 		}
 		try {
@@ -206,7 +218,42 @@ public class ConfigOptions implements ConfigOption {
 		if (stopLocation >= 1 && stopLocation <= 9 && stopLocation != lastPageLocation && stopLocation != nextPageLocation && stopLocation != lastSongLocation && stopLocation != nextSongLocation) {
 			stopInt = stopLocation - 1;
 		} else {
+			locationError = true;
 			Message.sendConsoleMessage(ChatColor.RED + "Invalid location in config for Stop!");
+		}
+		try {
+			playMaterial = Enum.valueOf(Material.class, WolfMusic.plugin.getConfig().getString("PlayItem").toUpperCase());
+		} catch (IllegalArgumentException e) {
+			Message.sendConsoleMessage(ChatColor.RED + "Invalid item in config for Play!");
+		}
+		playName = ChatColor.translateAlternateColorCodes('&', WolfMusic.plugin.getConfig().getString("PlayName"));
+		try {
+			repeatMaterial = Enum.valueOf(Material.class, WolfMusic.plugin.getConfig().getString("RepeatItem").toUpperCase());
+		} catch (IllegalArgumentException e) {
+			Message.sendConsoleMessage(ChatColor.RED + "Invalid item in config for Repeat!");
+		}
+		repeatName = ChatColor.translateAlternateColorCodes('&', WolfMusic.plugin.getConfig().getString("RepeatName"));
+		int repeatLocation = WolfMusic.plugin.getConfig().getInt("RepeatLocation");
+		if (repeatLocation >= 1 && repeatLocation <= 9 && repeatLocation != lastPageLocation && repeatLocation != nextPageLocation && repeatLocation != lastSongLocation && repeatLocation != nextSongLocation && repeatLocation != stopLocation) {
+			repeatInt = repeatLocation - 1;
+		} else {
+			locationError = true;
+			Message.sendConsoleMessage(ChatColor.RED + "Invalid location in config for Repeat!");
+		}
+		try {
+			stopRepeatMaterial = Enum.valueOf(Material.class, WolfMusic.plugin.getConfig().getString("StopRepeatItem").toUpperCase());
+		} catch (IllegalArgumentException e) {
+			Message.sendConsoleMessage(ChatColor.RED + "Invalid item in config for StopRepeat!");
+		}
+		stopRepeatName = ChatColor.translateAlternateColorCodes('&', WolfMusic.plugin.getConfig().getString("StopRepeatName"));
+		if (locationError) {
+			lastPageInt = 0;
+			nextPageInt = 8;
+			lastSongInt = 2;
+			nextSongInt = 6;
+			stopInt = 4;
+			repeatInt = 1;
+			Message.sendConsoleMessage(ChatColor.RED + "Default item locations have been used!");
 		}
 		try {
 			String s = WolfMusic.plugin.getConfig().getString("BossBar");

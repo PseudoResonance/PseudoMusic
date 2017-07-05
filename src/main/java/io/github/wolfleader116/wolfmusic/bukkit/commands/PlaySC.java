@@ -23,7 +23,7 @@ public class PlaySC implements SubCommandExecutor {
 					if (JukeboxController.isPlaying(p)) {
 						WolfMusic.message.sendPluginMessage(sender, "Music is already playing!");
 					} else {
-						JukeboxController.nextSong(p);
+						JukeboxController.startPlayer(p);
 					}
 				}
 			} else {
