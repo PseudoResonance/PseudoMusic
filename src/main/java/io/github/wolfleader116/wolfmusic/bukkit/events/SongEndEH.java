@@ -3,7 +3,7 @@ package io.github.wolfleader116.wolfmusic.bukkit.events;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import com.xxmicloxx.noteblockapi.SongEndEvent;
+import com.xxmicloxx.NoteBlockAPI.SongEndEvent;
 
 import io.github.wolfleader116.wolfmusic.bukkit.ConfigOptions;
 import io.github.wolfleader116.wolfmusic.bukkit.Jukebox;

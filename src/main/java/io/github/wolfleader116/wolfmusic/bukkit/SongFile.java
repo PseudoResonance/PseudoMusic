@@ -7,8 +7,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.boss.BarColor;
 
-import com.xxmicloxx.noteblockapi.NBSDecoder;
-import com.xxmicloxx.noteblockapi.Song;
+import com.xxmicloxx.NoteBlockAPI.NBSDecoder;
+import com.xxmicloxx.NoteBlockAPI.Song;
 
 public class SongFile {
 	

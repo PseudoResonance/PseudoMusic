@@ -1,13 +1,19 @@
 package io.github.wolfleader116.wolfmusic.bukkit;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.file.YamlConfiguration;
 
+import io.github.wolfleader116.wolfapi.bukkit.ConfigOption;
 import io.github.wolfleader116.wolfapi.bukkit.Message;
 import net.md_5.bungee.api.ChatColor;
 
-public class ConfigOptions {
+public class ConfigOptions implements ConfigOption {
 
 	public static PlayerType playerType = PlayerType.PRIVATE;
 	public static boolean autoStart = true;
@@ -41,9 +47,18 @@ public class ConfigOptions {
 	public static String titleMessage = "&c&lPlaying {cname}";
 	
 	public static boolean updateConfig() {
-		if (WolfMusic.plugin.getConfig().getInt("Version") == 3) {
-			Message.sendConsoleMessage(ChatColor.GREEN + "Config is up to date!");
-		} else {
+		boolean error = false;
+		InputStream configin = WolfMusic.plugin.getClass().getResourceAsStream("/config.yml"); 
+		BufferedReader configreader = new BufferedReader(new InputStreamReader(configin));
+		YamlConfiguration configc = YamlConfiguration.loadConfiguration(configreader);
+		int configcj = configc.getInt("Version");
+		try {
+			configreader.close();
+			configin.close();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		if (WolfMusic.plugin.getConfig().getInt("Version") != configcj) {
 			try {
 				String oldFile = "";
 				File conf = new File(WolfMusic.plugin.getDataFolder(), "config.yml");
@@ -64,14 +79,18 @@ public class ConfigOptions {
 				Message.sendConsoleMessage(ChatColor.GREEN + "Config is up to date! Old config file renamed to " + oldFile + ".");
 			} catch (Exception e) {
 				Message.sendConsoleMessage(ChatColor.RED + "Error while updating config!");
-				return false;
+				error = true;
 			}
 		}
-		reloadConfig();
+		if (!error) {
+			Message.sendConsoleMessage(ChatColor.GREEN + "Config is up to date!");
+		} else {
+			return false;
+		}
 		return true;
 	}
 	
-	public static void reloadConfig() {
+	public void reloadConfig() {
 		try {
 			String s = WolfMusic.plugin.getConfig().getString("PlayerType");
 			if (s.equalsIgnoreCase("global")) {

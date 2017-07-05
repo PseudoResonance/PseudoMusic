@@ -13,10 +13,21 @@ public class WolfMusicTC implements TabCompleter {
 		List<String> possible = new ArrayList<String>();
 		if (args.length == 1) {
 			possible.add("help");
-			possible.add("reload");
-			possible.add("reset");
-			possible.add("browse");
-			possible.add("play");
+			if (sender.hasPermission("wolfmusic.reload")) {
+				possible.add("reload");
+			}
+			if (sender.hasPermission("wolfmusic.reset")) {
+				possible.add("reset");
+			}
+			if (sender.hasPermission("wolfmusic.browse")) {
+				possible.add("browse");
+			}
+			if (sender.hasPermission("wolfmusic.play")) {
+				possible.add("play");
+			}
+			if (sender.hasPermission("wolfmusic.stop")) {
+				possible.add("stop");
+			}
 			if (args[0].equalsIgnoreCase("")) {
 				return possible;
 			} else {

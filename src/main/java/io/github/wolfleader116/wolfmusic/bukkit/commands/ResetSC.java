@@ -7,7 +7,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import io.github.wolfleader116.wolfapi.bukkit.ConfigOptions;
 import io.github.wolfleader116.wolfapi.bukkit.Errors;
 import io.github.wolfleader116.wolfapi.bukkit.SubCommandExecutor;
 import io.github.wolfleader116.wolfmusic.bukkit.JukeboxController;
@@ -31,7 +30,7 @@ public class ResetSC implements SubCommandExecutor {
 				for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 					JukeboxController.disconnect(p);
 				}
-				ConfigOptions.reloadConfig();
+				WolfMusic.getConfigOptions().reloadConfig();
 				WolfMusic.updateSongs();
 				for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 					JukeboxController.connect(p);
@@ -57,7 +56,7 @@ public class ResetSC implements SubCommandExecutor {
 			for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 				JukeboxController.disconnect(p);
 			}
-			ConfigOptions.reloadConfig();
+			WolfMusic.getConfigOptions().reloadConfig();
 			WolfMusic.updateSongs();
 			for (Player p : Bukkit.getServer().getOnlinePlayers()) {
 				JukeboxController.connect(p);

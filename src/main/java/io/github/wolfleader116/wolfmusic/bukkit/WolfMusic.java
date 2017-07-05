@@ -16,6 +16,7 @@ import io.github.wolfleader116.wolfapi.bukkit.CommandDescription;
 import io.github.wolfleader116.wolfapi.bukkit.HelpSC;
 import io.github.wolfleader116.wolfapi.bukkit.MainCommand;
 import io.github.wolfleader116.wolfapi.bukkit.Message;
+import io.github.wolfleader116.wolfapi.bukkit.WolfAPI;
 import io.github.wolfleader116.wolfapi.bukkit.WolfPlugin;
 import io.github.wolfleader116.wolfmusic.bukkit.commands.BrowseSC;
 import io.github.wolfleader116.wolfmusic.bukkit.commands.PlaySC;
@@ -35,6 +36,8 @@ public class WolfMusic extends WolfPlugin implements Listener {
 	private static MainCommand mainCommand;
 	private static HelpSC helpSubCommand;
 	
+	private static ConfigOptions configOptions;
+	
 	protected static List<SongFile> songs = new ArrayList<SongFile>();
 	private static Map<String, Integer> page = new HashMap<String, Integer>();
 	
@@ -43,8 +46,8 @@ public class WolfMusic extends WolfPlugin implements Listener {
 		super.onEnable();
 		this.saveDefaultConfig();
 		plugin = this;
+		configOptions = new ConfigOptions();
 		ConfigOptions.updateConfig();
-		ConfigOptions.songPath.mkdir();
 		message = new Message(this);
 		mainCommand = new MainCommand(plugin);
 		helpSubCommand = new HelpSC(plugin);
@@ -53,6 +56,9 @@ public class WolfMusic extends WolfPlugin implements Listener {
 		initializeSubCommands();
 		initializeListeners();
 		setCommandDescriptions();
+		configOptions.reloadConfig();
+		ConfigOptions.songPath.mkdir();
+		WolfAPI.registerConfig(configOptions);
 		Bukkit.getServer().getPluginManager().registerEvents(this, this);
 		updateSongs();
 	}
@@ -61,6 +67,10 @@ public class WolfMusic extends WolfPlugin implements Listener {
 	public void onDisable() {
 		super.onDisable();
         Bukkit.getScheduler().cancelTasks(this);
+	}
+	
+	public static ConfigOptions getConfigOptions() {
+		return WolfMusic.configOptions;
 	}
 
 	private void initializeCommands() {

@@ -6,8 +6,8 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.xxmicloxx.noteblockapi.RadioSongPlayer;
-import com.xxmicloxx.noteblockapi.SongPlayer;
+import com.xxmicloxx.NoteBlockAPI.RadioSongPlayer;
+import com.xxmicloxx.NoteBlockAPI.SongPlayer;
 
 public class Jukebox {
 	
