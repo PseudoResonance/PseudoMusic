@@ -449,12 +449,38 @@ public class Jukebox {
 	
 	protected String format(int i) {
 		if (i < 0) {
-			return "0";
+			return "0:00";
 		} else {
 			int minutes = (int) Math.floor(((double) i) / 60);
 			int secondsInMinutes = minutes * 60;
 			int seconds = i - secondsInMinutes;
-			return String.valueOf(minutes) + ":" + String.valueOf(seconds);
+			int hours = 0;
+			if (minutes >= 60) {
+				hours = (int) Math.floor(((double) minutes) / 60);
+				int minutesInHours = hours * 60;
+				minutes -= minutesInHours;
+			}
+			String ret = "0:00";
+			String sec = "00";
+			if (seconds < 10) {
+				sec = "0" + String.valueOf(seconds);
+			} else {
+				sec = String.valueOf(seconds);
+			}
+			if (hours > 0) {
+				String min = "0";
+				if (minutes < 10) {
+					min = "0" + String.valueOf(minutes);
+				} else {
+					min = String.valueOf(minutes);
+				}
+				String hr = String.valueOf(hours);
+				ret = hr + ":" +  min + ":" + sec;
+			} else {
+				String min = String.valueOf(minutes);
+				ret = min + ":" + sec;
+			}
+			return ret;
 		}
 	}
 	

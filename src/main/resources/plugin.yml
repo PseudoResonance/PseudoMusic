@@ -1,7 +1,7 @@
 name: WolfMusic
 author: WolfLeader116
 main: io.github.wolfleader116.wolfmusic.bukkit.WolfMusic
-version: 1.2
+version: 1.2.1
 description: Adds the ability to play music to players
 depend: [WolfAPI]
 commands:
