@@ -107,14 +107,16 @@ public class SongFile {
 		return this.song;
 	}
 	
-	private static long seed(String s) {
+	public String getLength() {
+		int total = (int) Math.ceil((double) song.getLength() / song.getSpeed());
+		return Jukebox.format(total);
+	}
+	
+	private static int seed(String s) {
 	    if (s == null) {
 	        return 0;
 	    }
-	    long hash = 0;
-	    for (char c : s.toCharArray()) {
-	        hash = 31L*hash + c;
-	    }
+	    int hash = s.hashCode();
 	    return hash;
 	}
 

@@ -3,7 +3,7 @@
 #########################
 
 #DO NOT CHANGE THIS LINE! YOUR CONFIG WILL BE RESET UPON LOADING IF THIS LINE IS EDITED!
-Version: 4
+Version: 5
 
 
 ########
@@ -89,6 +89,19 @@ RepeatLocation: 2
 #{name} = Song name
 StopRepeatName: "Disable Repeat"
 StopRepeatItem: Structure_Void
+
+#Shuffle Button
+#{name} = Song name
+ShuffleName: "Shuffle"
+ShuffleItem: Magenta_Glazed_Terracotta
+#Number between 1-9
+ShuffleLocation: 8
+
+#Disable Shuffle Button
+#Replaces shuffle button when music is shuffling
+#{name} = Song name
+StopShuffleName: "Disable Shuffle"
+StopShuffleItem: Structure_Void
 
 
 #########

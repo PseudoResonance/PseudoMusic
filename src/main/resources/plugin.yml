@@ -1,7 +1,7 @@
 name: WolfMusic
 author: WolfLeader116
 main: io.github.wolfleader116.wolfmusic.bukkit.WolfMusic
-version: 1.2.1
+version: 1.2.2
 description: Adds the ability to play music to players
 depend: [WolfAPI]
 commands:
@@ -26,6 +26,9 @@ permissions:
   wolfmusic.repeat:
     description: Allows the player to repeat music
     default: true
+  wolfmusic.shuffle:
+    description: Allows the player to shuffle music
+    default: true
   wolfmusic.*:
     description: Gives the user all WolfMusic permissions
     default: op
@@ -36,3 +39,4 @@ permissions:
       wolfmusic.play: true
       wolfmusic.stop: true
       wolfmusic.repeat: true
+      wolfmusic.shuffle: true

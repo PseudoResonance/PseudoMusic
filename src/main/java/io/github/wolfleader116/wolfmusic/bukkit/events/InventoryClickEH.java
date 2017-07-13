@@ -63,11 +63,21 @@ public class InventoryClickEH implements Listener {
 							GUISetPage.setPage(p, page);
 							e.setCancelled(true);
 						} else if (name.startsWith("§7§f")) {
+							JukeboxController.setShuffle(p, false);
+							p.closeInventory();
+							GUISetPage.setPage(p, page);
+							e.setCancelled(true);
+						} else if (name.startsWith("§8§f")) {
+							JukeboxController.setShuffle(p, true);
+							p.closeInventory();
+							GUISetPage.setPage(p, page);
+							e.setCancelled(true);
+						} else if (name.startsWith("§9§f")) {
 							int o = page - 1;
 							p.closeInventory();
 							GUISetPage.setPage(p, o);
 							e.setCancelled(true);
-						} else if (name.startsWith("§8§f")) {
+						} else if (name.startsWith("§0§f")) {
 							int o = page + 1;
 							p.closeInventory();
 							GUISetPage.setPage(p, o);

@@ -41,9 +41,14 @@ public class ConfigOptions implements ConfigOption {
 	public static String playName = "Play {name}";
 	public static Material repeatMaterial = Material.ARROW;
 	public static String repeatName = "Repeat";
-	public static int repeatInt = 2;
+	public static int repeatInt = 1;
 	public static Material stopRepeatMaterial = Material.STRUCTURE_VOID;
 	public static String stopRepeatName = "Disable Repeat";
+	public static Material shuffleMaterial = Material.MAGENTA_GLAZED_TERRACOTTA;
+	public static String shuffleName = "Shuffle";
+	public static int shuffleInt = 7;
+	public static Material stopShuffleMaterial = Material.STRUCTURE_VOID;
+	public static String stopShuffleName = "Disable Shuffle";
 	public static boolean bossBar = true;
 	public static long barVisibility = 0;
 	public static String barMessage = "&c&lPlaying {cname} &3&l - &f{time} &c&l- &f{total}";
@@ -245,7 +250,25 @@ public class ConfigOptions implements ConfigOption {
 		} catch (IllegalArgumentException e) {
 			Message.sendConsoleMessage(ChatColor.RED + "Invalid item in config for StopRepeat!");
 		}
-		stopRepeatName = ChatColor.translateAlternateColorCodes('&', WolfMusic.plugin.getConfig().getString("StopRepeatName"));
+		try {
+			shuffleMaterial = Enum.valueOf(Material.class, WolfMusic.plugin.getConfig().getString("ShuffleItem").toUpperCase());
+		} catch (IllegalArgumentException e) {
+			Message.sendConsoleMessage(ChatColor.RED + "Invalid item in config for Shuffle!");
+		}
+		shuffleName = ChatColor.translateAlternateColorCodes('&', WolfMusic.plugin.getConfig().getString("ShuffleName"));
+		int shuffleLocation = WolfMusic.plugin.getConfig().getInt("ShuffleLocation");
+		if (shuffleLocation >= 1 && shuffleLocation <= 9 && shuffleLocation != lastPageLocation && shuffleLocation != nextPageLocation && shuffleLocation != lastSongLocation && shuffleLocation != nextSongLocation && shuffleLocation != stopLocation && shuffleLocation != repeatLocation) {
+			shuffleInt = shuffleLocation - 1;
+		} else {
+			locationError = true;
+			Message.sendConsoleMessage(ChatColor.RED + "Invalid location in config for Shuffle!");
+		}
+		try {
+			stopShuffleMaterial = Enum.valueOf(Material.class, WolfMusic.plugin.getConfig().getString("StopShuffleItem").toUpperCase());
+		} catch (IllegalArgumentException e) {
+			Message.sendConsoleMessage(ChatColor.RED + "Invalid item in config for StopShuffle!");
+		}
+		stopShuffleName = ChatColor.translateAlternateColorCodes('&', WolfMusic.plugin.getConfig().getString("StopShuffleName"));
 		if (locationError) {
 			lastPageInt = 0;
 			nextPageInt = 8;
@@ -253,6 +276,7 @@ public class ConfigOptions implements ConfigOption {
 			nextSongInt = 6;
 			stopInt = 4;
 			repeatInt = 1;
+			shuffleInt = 7;
 			Message.sendConsoleMessage(ChatColor.RED + "Default item locations have been used!");
 		}
 		try {

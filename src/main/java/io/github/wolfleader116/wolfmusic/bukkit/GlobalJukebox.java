@@ -2,6 +2,7 @@ package io.github.wolfleader116.wolfmusic.bukkit;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
@@ -23,7 +24,9 @@ public class GlobalJukebox {
 	protected boolean bossBarVisibility = false;
 	protected GlobalBarUpdate barUpdate;
 	protected boolean repeat = false;
+	protected boolean shuffle = false;
 	protected boolean stopped = true;
+	private Random random = new Random();
 	
 	GlobalJukebox() {
 		String barMessage = ConfigOptions.barMessage;
@@ -39,49 +42,9 @@ public class GlobalJukebox {
 		kill();
 		stopped = false;
 		songFile = sf;
-		songPlayer = new RadioSongPlayer(songFile.getSong());
-		for (Player p : listening) {
-			songPlayer.addPlayer(p);
-		}
-		songPlayer.setPlaying(true);
-		playing = true;
-		if (ConfigOptions.bossBar) {
-			String barMessage = ConfigOptions.barMessage;
-			barMessage = barMessage.replace("{name}", songFile.getName());
-			barMessage = barMessage.replace("{cname}", songFile.getColor() + songFile.getName());
-			int now = (int) Math.ceil(((double) songPlayer.getTick()) / songPlayer.getSong().getSpeed());
-			int total = (int) Math.ceil((double) songPlayer.getSong().getLength() / songPlayer.getSong().getSpeed());
-			String nowS = format(now);
-			String totalS = format(total);
-			barMessage = barMessage.replace("{time}", nowS);
-			barMessage = barMessage.replace("{total}", totalS);
-			bossBar.setTitle(barMessage);
-			bossBar.setColor(songFile.getBarColor());
-			bossBar.setProgress(0.0);
-			for (Player p : listening) {
-				bossBar.addPlayer(p);
-			}
-			bossBar.setVisible(true);
-			bossBarVisibility = true;
-			if (ConfigOptions.barVisibility != 0) {
-				Bukkit.getScheduler().scheduleSyncDelayedTask(WolfMusic.plugin, new Runnable() {
-					public void run() {
-						bossBar.setVisible(false);
-					}
-				}, ConfigOptions.barVisibility);
-			} else {
-				barUpdate = new GlobalBarUpdate(this);
-				barUpdate.runTaskTimer(WolfMusic.plugin, ConfigOptions.barUpdate, ConfigOptions.barUpdate);
-			}
-		}
-		if (ConfigOptions.title) {
-			String titleMessage = ConfigOptions.titleMessage;
-			titleMessage = titleMessage.replace("{name}", songFile.getName());
-			titleMessage = titleMessage.replace("{cname}", songFile.getColor() + songFile.getName());
-			for (Player p : listening) {
-				p.sendTitle("", titleMessage, ConfigOptions.titleFade, ConfigOptions.titleVisibility, ConfigOptions.titleFade);
-			}
-		}
+		startSong();
+		bossBar();
+		title();
 	}
 	
 	public void addPlayer(Player p) {
@@ -126,6 +89,10 @@ public class GlobalJukebox {
 		return repeat;
 	}
 	
+	public boolean isShuffling() {
+		return shuffle;
+	}
+	
 	public void kill() {
 		if (ConfigOptions.bossBar) {
 			if (barUpdate != null) {
@@ -144,7 +111,7 @@ public class GlobalJukebox {
 		stopped = true;
 	}
 	
-	public String nextSongName() {
+	public SongFile getNextSong() {
 		if (WolfMusic.songs.size() >= 1) {
 			int i = 0;
 			if (songFile != null) {
@@ -158,12 +125,12 @@ public class GlobalJukebox {
 				i = 0;
 			}
 			SongFile sf = WolfMusic.getSongs()[i];
-			return sf.getName();
+			return sf;
 		}
-		return "None";
+		return null;
 	}
 	
-	public String lastSongName() {
+	public SongFile getLastSong() {
 		if (WolfMusic.songs.size() >= 1) {
 			int i = WolfMusic.songs.size() - 1;
 			if (songFile != null) {
@@ -177,9 +144,9 @@ public class GlobalJukebox {
 				i = 0;
 			}
 			SongFile sf = WolfMusic.getSongs()[i];
-			return sf.getName();
+			return sf;
 		}
-		return "None";
+		return null;
 	}
 	
 	public void nextAutoSong() {
@@ -209,61 +176,26 @@ public class GlobalJukebox {
 						i = 0;
 					}
 				} else {
-					if (songFile != null) {
-						i = WolfMusic.songs.indexOf(songFile);
-						i++;
-						if (i >= WolfMusic.songs.size()) {
+					if (shuffle) {
+						int count = WolfMusic.songs.size();
+						i = random.nextInt(count);
+					} else {
+						if (songFile != null) {
+							i = WolfMusic.songs.indexOf(songFile);
+							i++;
+							if (i >= WolfMusic.songs.size()) {
+								i = 0;
+							}
+						}
+						if (WolfMusic.songs.size() == 1) {
 							i = 0;
 						}
 					}
-					if (WolfMusic.songs.size() == 1) {
-						i = 0;
-					}
 				}
 				songFile = WolfMusic.getSongs()[i];
-				songPlayer = new RadioSongPlayer(songFile.getSong());
-				for (Player p : listening) {
-					songPlayer.addPlayer(p);
-				}
-				songPlayer.setPlaying(true);
-				playing = true;
-				if (ConfigOptions.bossBar) {
-					String barMessage = ConfigOptions.barMessage;
-					barMessage = barMessage.replace("{name}", songFile.getName());
-					barMessage = barMessage.replace("{cname}", songFile.getColor() + songFile.getName());
-					int now = (int) Math.ceil(((double) songPlayer.getTick()) / songPlayer.getSong().getSpeed());
-					int total = (int) Math.ceil((double) songPlayer.getSong().getLength() / songPlayer.getSong().getSpeed());
-					String nowS = format(now);
-					String totalS = format(total);
-					barMessage = barMessage.replace("{time}", nowS);
-					barMessage = barMessage.replace("{total}", totalS);
-					bossBar.setTitle(barMessage);
-					bossBar.setColor(songFile.getBarColor());
-					bossBar.setProgress(0.0);
-					for (Player p : listening) {
-						bossBar.addPlayer(p);
-					}
-					bossBar.setVisible(true);
-					bossBarVisibility = true;
-					if (ConfigOptions.barVisibility != 0) {
-						Bukkit.getScheduler().scheduleSyncDelayedTask(WolfMusic.plugin, new Runnable() {
-							public void run() {
-								bossBar.setVisible(false);
-							}
-						}, ConfigOptions.barVisibility);
-					} else {
-						barUpdate = new GlobalBarUpdate(this);
-						barUpdate.runTaskTimer(WolfMusic.plugin, ConfigOptions.barUpdate, ConfigOptions.barUpdate);
-					}
-				}
-				if (ConfigOptions.title) {
-					String titleMessage = ConfigOptions.titleMessage;
-					titleMessage = titleMessage.replace("{name}", songFile.getName());
-					titleMessage = titleMessage.replace("{cname}", songFile.getColor() + songFile.getName());
-					for (Player p : listening) {
-						p.sendTitle("", titleMessage, ConfigOptions.titleFade, ConfigOptions.titleVisibility, ConfigOptions.titleFade);
-					}
-				}
+				startSong();
+				bossBar();
+				title();
 			}
 		}
 	}
@@ -294,49 +226,9 @@ public class GlobalJukebox {
 				i = 0;
 			}
 			songFile = WolfMusic.getSongs()[i];
-			songPlayer = new RadioSongPlayer(songFile.getSong());
-			for (Player p : listening) {
-				songPlayer.addPlayer(p);
-			}
-			songPlayer.setPlaying(true);
-			playing = true;
-			if (ConfigOptions.bossBar) {
-				String barMessage = ConfigOptions.barMessage;
-				barMessage = barMessage.replace("{name}", songFile.getName());
-				barMessage = barMessage.replace("{cname}", songFile.getColor() + songFile.getName());
-				int now = (int) Math.ceil(((double) songPlayer.getTick()) / songPlayer.getSong().getSpeed());
-				int total = (int) Math.ceil((double) songPlayer.getSong().getLength() / songPlayer.getSong().getSpeed());
-				String nowS = format(now);
-				String totalS = format(total);
-				barMessage = barMessage.replace("{time}", nowS);
-				barMessage = barMessage.replace("{total}", totalS);
-				bossBar.setTitle(barMessage);
-				bossBar.setColor(songFile.getBarColor());
-				bossBar.setProgress(0.0);
-				for (Player p : listening) {
-					bossBar.addPlayer(p);
-				}
-				bossBar.setVisible(true);
-				bossBarVisibility = true;
-				if (ConfigOptions.barVisibility != 0) {
-					Bukkit.getScheduler().scheduleSyncDelayedTask(WolfMusic.plugin, new Runnable() {
-						public void run() {
-							bossBar.setVisible(false);
-						}
-					}, ConfigOptions.barVisibility);
-				} else {
-					barUpdate = new GlobalBarUpdate(this);
-					barUpdate.runTaskTimer(WolfMusic.plugin, ConfigOptions.barUpdate, ConfigOptions.barUpdate);
-				}
-			}
-			if (ConfigOptions.title) {
-				String titleMessage = ConfigOptions.titleMessage;
-				titleMessage = titleMessage.replace("{name}", songFile.getName());
-				titleMessage = titleMessage.replace("{cname}", songFile.getColor() + songFile.getName());
-				for (Player p : listening) {
-					p.sendTitle("", titleMessage, ConfigOptions.titleFade, ConfigOptions.titleVisibility, ConfigOptions.titleFade);
-				}
-			}
+			startSong();
+			bossBar();
+			title();
 		}
 	}
 	
@@ -367,49 +259,9 @@ public class GlobalJukebox {
 				i = 0;
 			}
 			songFile = WolfMusic.getSongs()[i];
-			songPlayer = new RadioSongPlayer(songFile.getSong());
-			for (Player p : listening) {
-				songPlayer.addPlayer(p);
-			}
-			songPlayer.setPlaying(true);
-			playing = true;
-			if (ConfigOptions.bossBar) {
-				String barMessage = ConfigOptions.barMessage;
-				barMessage = barMessage.replace("{name}", songFile.getName());
-				barMessage = barMessage.replace("{cname}", songFile.getColor() + songFile.getName());
-				int now = (int) Math.ceil(((double) songPlayer.getTick()) / songPlayer.getSong().getSpeed());
-				int total = (int) Math.ceil((double) songPlayer.getSong().getLength() / songPlayer.getSong().getSpeed());
-				String nowS = format(now);
-				String totalS = format(total);
-				barMessage = barMessage.replace("{time}", nowS);
-				barMessage = barMessage.replace("{total}", totalS);
-				bossBar.setTitle(barMessage);
-				bossBar.setColor(songFile.getBarColor());
-				bossBar.setProgress(0.0);
-				for (Player p : listening) {
-					bossBar.addPlayer(p);
-				}
-				bossBar.setVisible(true);
-				bossBarVisibility = true;
-				if (ConfigOptions.barVisibility != 0) {
-					Bukkit.getScheduler().scheduleSyncDelayedTask(WolfMusic.plugin, new Runnable() {
-						public void run() {
-							bossBar.setVisible(false);
-						}
-					}, ConfigOptions.barVisibility);
-				} else {
-					barUpdate = new GlobalBarUpdate(this);
-					barUpdate.runTaskTimer(WolfMusic.plugin, ConfigOptions.barUpdate, ConfigOptions.barUpdate);
-				}
-			}
-			if (ConfigOptions.title) {
-				String titleMessage = ConfigOptions.titleMessage;
-				titleMessage = titleMessage.replace("{name}", songFile.getName());
-				titleMessage = titleMessage.replace("{cname}", songFile.getColor() + songFile.getName());
-				for (Player p : listening) {
-					p.sendTitle("", titleMessage, ConfigOptions.titleFade, ConfigOptions.titleVisibility, ConfigOptions.titleFade);
-				}
-			}
+			startSong();
+			bossBar();
+			title();
 		}
 	}
 	
@@ -440,48 +292,60 @@ public class GlobalJukebox {
 				i = 0;
 			}
 			songFile = WolfMusic.getSongs()[i];
-			songPlayer = new RadioSongPlayer(songFile.getSong());
+			startSong();
+			bossBar();
+			title();
+		}
+	}
+	
+	private void startSong() {
+		songPlayer = new RadioSongPlayer(songFile.getSong());
+		for (Player p : listening) {
+			songPlayer.addPlayer(p);
+		}
+		songPlayer.setPlaying(true);
+		playing = true;
+	}
+	
+	private void bossBar() {
+		if (ConfigOptions.bossBar) {
+			String barMessage = ConfigOptions.barMessage;
+			barMessage = barMessage.replace("{name}", songFile.getName());
+			barMessage = barMessage.replace("{cname}", songFile.getColor() + songFile.getName());
+			int now = (int) Math.ceil(((double) songPlayer.getTick()) / songPlayer.getSong().getSpeed());
+			int total = (int) Math.ceil((double) songPlayer.getSong().getLength() / songPlayer.getSong().getSpeed());
+			String nowS = Jukebox.format(now);
+			String totalS = Jukebox.format(total);
+			barMessage = barMessage.replace("{time}", nowS);
+			barMessage = barMessage.replace("{total}", totalS);
+			bossBar.setTitle(barMessage);
+			bossBar.setColor(songFile.getBarColor());
+			bossBar.setProgress(0.0);
 			for (Player p : listening) {
-				songPlayer.addPlayer(p);
+				bossBar.addPlayer(p);
 			}
-			songPlayer.setPlaying(true);
-			playing = true;
-			if (ConfigOptions.bossBar) {
-				String barMessage = ConfigOptions.barMessage;
-				barMessage = barMessage.replace("{name}", songFile.getName());
-				barMessage = barMessage.replace("{cname}", songFile.getColor() + songFile.getName());
-				int now = (int) Math.ceil(((double) songPlayer.getTick()) / songPlayer.getSong().getSpeed());
-				int total = (int) Math.ceil((double) songPlayer.getSong().getLength() / songPlayer.getSong().getSpeed());
-				String nowS = format(now);
-				String totalS = format(total);
-				barMessage = barMessage.replace("{time}", nowS);
-				barMessage = barMessage.replace("{total}", totalS);
-				bossBar.setTitle(barMessage);
-				bossBar.setColor(songFile.getBarColor());
-				bossBar.setProgress(0.0);
-				for (Player p : listening) {
-					bossBar.addPlayer(p);
-				}
-				bossBar.setVisible(true);
-				bossBarVisibility = true;
-				if (ConfigOptions.barVisibility != 0) {
-					Bukkit.getScheduler().scheduleSyncDelayedTask(WolfMusic.plugin, new Runnable() {
-						public void run() {
-							bossBar.setVisible(false);
-						}
-					}, ConfigOptions.barVisibility);
-				} else {
-					barUpdate = new GlobalBarUpdate(this);
-					barUpdate.runTaskTimer(WolfMusic.plugin, ConfigOptions.barUpdate, ConfigOptions.barUpdate);
-				}
+			bossBar.setVisible(true);
+			bossBarVisibility = true;
+			if (ConfigOptions.barVisibility != 0) {
+				Bukkit.getScheduler().scheduleSyncDelayedTask(WolfMusic.plugin, new Runnable() {
+					public void run() {
+						bossBar.setVisible(false);
+					}
+				}, ConfigOptions.barVisibility);
+			} else {
+				barUpdate = new GlobalBarUpdate(this);
+				barUpdate.runTaskTimer(WolfMusic.plugin, ConfigOptions.barUpdate, ConfigOptions.barUpdate);
 			}
-			if (ConfigOptions.title) {
-				String titleMessage = ConfigOptions.titleMessage;
-				titleMessage = titleMessage.replace("{name}", songFile.getName());
-				titleMessage = titleMessage.replace("{cname}", songFile.getColor() + songFile.getName());
-				for (Player p : listening) {
-					p.sendTitle("", titleMessage, ConfigOptions.titleFade, ConfigOptions.titleVisibility, ConfigOptions.titleFade);
-				}
+		}
+	}
+	
+	private void title() {
+		if (ConfigOptions.title) {
+			String titleMessage = ConfigOptions.titleMessage;
+			titleMessage = titleMessage.replace("{name}", songFile.getName());
+			titleMessage = titleMessage.replace("{cname}", songFile.getColor() + songFile.getName());
+			for (Player p : listening) {
+				p.sendTitle("", titleMessage, ConfigOptions.titleFade, ConfigOptions.titleVisibility, ConfigOptions.titleFade);
 			}
 		}
 	}
@@ -512,19 +376,12 @@ public class GlobalJukebox {
 		return this.songPlayer;
 	}
 	
-	protected String format(int i) {
-		if (i < 0) {
-			return "0";
-		} else {
-			int minutes = (int) Math.floor(((double) i) / 60);
-			int secondsInMinutes = minutes * 60;
-			int seconds = i - secondsInMinutes;
-			return String.valueOf(minutes) + ":" + String.valueOf(seconds);
-		}
-	}
-	
 	public void setRepeat(boolean value) {
 		repeat = value;
+	}
+
+	public void setShuffle(boolean value) {
+		shuffle = value;
 	}
 
 }
@@ -545,8 +402,8 @@ class GlobalBarUpdate extends BukkitRunnable {
 		if (j.songFile != null && j.bossBar != null) {
 			int now = (int) Math.ceil(((double) j.songPlayer.getTick()) / j.songPlayer.getSong().getSpeed());
 			int total = (int) Math.ceil((double) j.songPlayer.getSong().getLength() / j.songPlayer.getSong().getSpeed());
-			String nowS = j.format(now);
-			String totalS = j.format(total);
+			String nowS = Jukebox.format(now);
+			String totalS = Jukebox.format(total);
 			String output = barMessage;
 			output = output.replace("{time}", nowS);
 			output = output.replace("{total}", totalS);

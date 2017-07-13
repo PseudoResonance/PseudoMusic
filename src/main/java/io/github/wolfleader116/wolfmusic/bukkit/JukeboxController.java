@@ -90,37 +90,45 @@ public class JukeboxController {
 		}
 	}
 	
-	public static String getSong(Player p) {
+	public static void setShuffle(Player p, boolean value) {
+		if (ConfigOptions.playerType == PlayerType.PRIVATE) {
+			jukeboxes.get(p).setShuffle(value);
+		} else {
+			global.setShuffle(value);
+		}
+	}
+	
+	public static SongFile getSong(Player p) {
 		if (ConfigOptions.playerType == PlayerType.PRIVATE) {
 			SongFile sf = jukeboxes.get(p).getSong();
 			if (sf != null) {
-				return sf.getName();
+				return sf;
 			} else {
-				return "";
+				return null;
 			}
 		} else {
 			SongFile sf = global.getSong();
 			if (sf != null) {
-				return sf.getName();
+				return sf;
 			} else {
-				return "";
+				return null;
 			}
 		}
 	}
 	
-	public static String getNextSong(Player p) {
+	public static SongFile getNextSong(Player p) {
 		if (ConfigOptions.playerType == PlayerType.PRIVATE) {
-			return jukeboxes.get(p).nextSongName();
+			return jukeboxes.get(p).getNextSong();
 		} else {
-			return global.nextSongName();
+			return global.getNextSong();
 		}
 	}
 	
-	public static String getLastSong(Player p) {
+	public static SongFile getLastSong(Player p) {
 		if (ConfigOptions.playerType == PlayerType.PRIVATE) {
-			return jukeboxes.get(p).lastSongName();
+			return jukeboxes.get(p).getLastSong();
 		} else {
-			return global.lastSongName();
+			return global.getLastSong();
 		}
 	}
 	
@@ -149,6 +157,14 @@ public class JukeboxController {
 			return jukeboxes.get(p).isRepeating();
 		} else {
 			return global.isRepeating();
+		}
+	}
+	
+	public static boolean isShuffling(Player p) {
+		if (ConfigOptions.playerType == PlayerType.PRIVATE) {
+			return jukeboxes.get(p).isShuffling();
+		} else {
+			return global.isShuffling();
 		}
 	}
 	

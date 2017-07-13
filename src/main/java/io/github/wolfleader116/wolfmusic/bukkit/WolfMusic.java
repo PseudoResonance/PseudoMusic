@@ -23,6 +23,7 @@ import io.github.wolfleader116.wolfmusic.bukkit.commands.PlaySC;
 import io.github.wolfleader116.wolfmusic.bukkit.commands.ReloadSC;
 import io.github.wolfleader116.wolfmusic.bukkit.commands.RepeatSC;
 import io.github.wolfleader116.wolfmusic.bukkit.commands.ResetSC;
+import io.github.wolfleader116.wolfmusic.bukkit.commands.ShuffleSC;
 import io.github.wolfleader116.wolfmusic.bukkit.commands.StopSC;
 import io.github.wolfleader116.wolfmusic.bukkit.completers.WolfMusicTC;
 import io.github.wolfleader116.wolfmusic.bukkit.events.InventoryClickEH;
@@ -86,6 +87,7 @@ public class WolfMusic extends WolfPlugin implements Listener {
 		subCommands.put("play", new PlaySC());
 		subCommands.put("stop", new StopSC());
 		subCommands.put("repeat", new RepeatSC());
+		subCommands.put("shuffle", new ShuffleSC());
 	}
 
 	private void initializeTabcompleters() {
@@ -107,6 +109,7 @@ public class WolfMusic extends WolfPlugin implements Listener {
 		commandDescriptions.add(new CommandDescription("wolfmusic play", "Starts the player", "wolfmusic.play"));
 		commandDescriptions.add(new CommandDescription("wolfmusic stop", "Stops the player", "wolfmusic.stop"));
 		commandDescriptions.add(new CommandDescription("wolfmusic repeat", "Enables/disables repeat", "wolfmusic.repeat"));
+		commandDescriptions.add(new CommandDescription("wolfmusic shuffle", "Enables/disables shuffle", "wolfmusic.shuffle"));
 	}
 	
 	public static SongFile[] getSongs() {
