@@ -1,6 +1,6 @@
-#########################
-#WolfMusic Bukkit Config#
-#########################
+####################
+#PseudoMusic Config#
+####################
 
 #DO NOT CHANGE THIS LINE! YOUR CONFIG WILL BE RESET UPON LOADING IF THIS LINE IS EDITED!
 Version: 5
@@ -30,11 +30,11 @@ PlaylistDelay: 5
 #Music#
 #######
 
-#Song Folder Path (From WolfMusic Plugin Folder)
+#Song Folder Path (From PseudoMusic Plugin Folder)
 SongPath: songs
 
 #Interface Name
-InterfaceName: "&c&lWolfMusic"
+InterfaceName: "&c&lPseudoMusic"
 
 #Last Page Button
 #{page} = Page number

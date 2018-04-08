@@ -1,42 +1,42 @@
-name: WolfMusic
-author: WolfLeader116
-main: io.github.wolfleader116.wolfmusic.bukkit.WolfMusic
-version: 1.2.2
+name: PseudoMusic
+author: PseudoResonance
+main: io.github.pseudoresonance.pseudomusic.PseudoMusic
+version: 1.3
 description: Adds the ability to play music to players
-depend: [WolfAPI]
+depend: [PseudoAPI,NoteBlockAPI]
 commands:
-  wolfmusic:
-    description: WolfMusic Menu
+  pseudomusic:
+    description: PseudoMusic Menu
 permissions:
-  wolfmusic.reset:
+  pseudomusic.reset:
     description: Allows the player to reset the config
     default: op
-  wolfmusic.reload:
+  pseudomusic.reload:
     description: Allows the player to reload the plugin
     default: op
-  wolfmusic.browse:
+  pseudomusic.browse:
     description: Allows the player to browse music
     default: true
-  wolfmusic.play:
+  pseudomusic.play:
     description: Allows the player to start music
     default: true
-  wolfmusic.stop:
+  pseudomusic.stop:
     description: Allows the player to stop music
     default: true
-  wolfmusic.repeat:
+  pseudomusic.repeat:
     description: Allows the player to repeat music
     default: true
-  wolfmusic.shuffle:
+  pseudomusic.shuffle:
     description: Allows the player to shuffle music
     default: true
-  wolfmusic.*:
-    description: Gives the user all WolfMusic permissions
+  pseudomusic.*:
+    description: Gives the user all PseudoMusic permissions
     default: op
     children:
-      wolfmusic.reset: true
-      wolfmusic.reload: true
-      wolfmusic.browse: true
-      wolfmusic.play: true
-      wolfmusic.stop: true
-      wolfmusic.repeat: true
-      wolfmusic.shuffle: true
+      pseudomusic.reset: true
+      pseudomusic.reload: true
+      pseudomusic.browse: true
+      pseudomusic.play: true
+      pseudomusic.stop: true
+      pseudomusic.repeat: true
+      pseudomusic.shuffle: true
