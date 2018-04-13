@@ -24,14 +24,40 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>3.7.0</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>com.coderplus.maven.plugins</groupId>
+				<artifactId>copy-rename-maven-plugin</artifactId>
+				<version>1.0</version>
+				<executions>
+					<execution>
+						<id>copy-file</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<fileSets>
+								<fileSet>
+									<sourceFile>target/${project.artifactId}-${project.version}.jar</sourceFile>
+									<destinationFile>artifacts/${project.artifactId}-${project.version}.jar</destinationFile>
+								</fileSet>
+								<fileSet>
+									<sourceFile>target/${project.artifactId}-${project.version}.jar</sourceFile>
+									<destinationFile>artifacts/${project.artifactId}.jar</destinationFile>
+								</fileSet>
+							</fileSets>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
-		<finalName>${project.artifactId}</finalName>
+		<finalName>${project.artifactId}-${project.version}</finalName>
 	</build>
 	<repositories>
 		<repository>
