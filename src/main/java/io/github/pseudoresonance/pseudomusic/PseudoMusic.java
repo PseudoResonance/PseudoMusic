@@ -18,6 +18,7 @@ import io.github.pseudoresonance.pseudoapi.bukkit.MainCommand;
 import io.github.pseudoresonance.pseudoapi.bukkit.Message;
 import io.github.pseudoresonance.pseudoapi.bukkit.PseudoAPI;
 import io.github.pseudoresonance.pseudoapi.bukkit.PseudoPlugin;
+import io.github.pseudoresonance.pseudoapi.bukkit.PseudoUpdater;
 import io.github.pseudoresonance.pseudoapi.bukkit.playerdata.Column;
 import io.github.pseudoresonance.pseudoapi.bukkit.playerdata.PlayerDataController;
 import io.github.pseudoresonance.pseudomusic.commands.BrowseSC;
@@ -44,6 +45,10 @@ public class PseudoMusic extends PseudoPlugin implements Listener {
 	
 	protected static List<SongFile> songs = new ArrayList<SongFile>();
 	private static Map<String, Integer> page = new HashMap<String, Integer>();
+	
+	public void onLoad() {
+		PseudoUpdater.registerPlugin(this);
+	}
 	
 	@Override
 	public void onEnable() {
