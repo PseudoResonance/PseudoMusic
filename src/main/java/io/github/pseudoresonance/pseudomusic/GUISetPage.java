@@ -18,7 +18,12 @@ import net.md_5.bungee.api.ChatColor;
 public class GUISetPage {
 	
 	public static void setPage(Player p, int page) {
+		setPage(p, page, null);
+	}
+	
+	public static void setPage(Player p, int page, Inventory inv) {
 		SongFile[] songs = PseudoMusic.getSongs();
+		boolean newInv = false;
 		if (songs.length >= 1) {
 			SongFile lastSong = JukeboxController.getLastSong(p);
 			SongFile nextSong = JukeboxController.getNextSong(p);
@@ -27,7 +32,12 @@ public class GUISetPage {
 			if (currentSong != null) {
 				currentSongName = currentSong.getColor() + currentSong.getName();
 			}
-			Inventory inv = Bukkit.createInventory(null, 54, ConfigOptions.interfaceName);
+			if (inv == null) {
+				newInv = true;
+				inv = Bukkit.createInventory(null, 54, ConfigOptions.interfaceName);
+			} else {
+				inv.clear();
+			}
 			int total = (int) Math.ceil((double) songs.length / 45);
 			if (page > total) {
 				Message.sendConsoleMessage(ChatColor.RED + "Programming Error! That page number is too high!");
@@ -173,7 +183,10 @@ public class GUISetPage {
 					}
 				}
 			}
-			p.openInventory(inv);
+			if (newInv)
+				p.openInventory(inv);
+			else
+				p.updateInventory();
 		} else {
 			PseudoMusic.message.sendPluginError(p, Errors.CUSTOM, "There are no songs on the server!");
 		}

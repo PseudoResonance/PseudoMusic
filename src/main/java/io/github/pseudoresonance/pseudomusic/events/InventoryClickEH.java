@@ -1,11 +1,11 @@
 package io.github.pseudoresonance.pseudomusic.events;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -20,8 +20,7 @@ public class InventoryClickEH implements Listener {
 
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent e) {
-		Inventory i = e.getInventory();
-		String t = i.getTitle();
+		String t = e.getView().getTitle();
 		if (t.equalsIgnoreCase(ConfigOptions.interfaceName)) {
 			e.setCancelled(true);
 			Player p = (Player) e.getWhoClicked();
@@ -34,53 +33,43 @@ public class InventoryClickEH implements Listener {
 						int page = PseudoMusic.getPage(p.getName());
 						if (name.startsWith("§1§f")) {
 							JukeboxController.lastSong(p);
-							p.closeInventory();
-							GUISetPage.setPage(p, page);
+							GUISetPage.setPage(p, page, e.getInventory());
 							e.setCancelled(true);
 						} else if (name.startsWith("§2§f")) {
 							JukeboxController.nextSong(p);
-							p.closeInventory();
-							GUISetPage.setPage(p, page);
+							GUISetPage.setPage(p, page, e.getInventory());
 							e.setCancelled(true);
 						} else if (name.startsWith("§3§f")) {
 							JukeboxController.stopSong(p);
-							p.closeInventory();
-							GUISetPage.setPage(p, page);
+							GUISetPage.setPage(p, page, e.getInventory());
 							e.setCancelled(true);
 						} else if (name.startsWith("§4§f")) {
 							JukeboxController.startPlayer(p);
-							p.closeInventory();
-							GUISetPage.setPage(p, page);
+							GUISetPage.setPage(p, page, e.getInventory());
 							e.setCancelled(true);
 						} else if (name.startsWith("§5§f")) {
 							JukeboxController.setRepeat(p, false);
-							p.closeInventory();
-							GUISetPage.setPage(p, page);
+							GUISetPage.setPage(p, page, e.getInventory());
 							e.setCancelled(true);
 						} else if (name.startsWith("§6§f")) {
 							JukeboxController.setRepeat(p, true);
-							p.closeInventory();
-							GUISetPage.setPage(p, page);
+							GUISetPage.setPage(p, page, e.getInventory());
 							e.setCancelled(true);
 						} else if (name.startsWith("§7§f")) {
 							JukeboxController.setShuffle(p, false);
-							p.closeInventory();
-							GUISetPage.setPage(p, page);
+							GUISetPage.setPage(p, page, e.getInventory());
 							e.setCancelled(true);
 						} else if (name.startsWith("§8§f")) {
 							JukeboxController.setShuffle(p, true);
-							p.closeInventory();
-							GUISetPage.setPage(p, page);
+							GUISetPage.setPage(p, page, e.getInventory());
 							e.setCancelled(true);
 						} else if (name.startsWith("§9§f")) {
 							int o = page - 1;
-							p.closeInventory();
-							GUISetPage.setPage(p, o);
+							GUISetPage.setPage(p, o, e.getInventory());
 							e.setCancelled(true);
 						} else if (name.startsWith("§0§f")) {
 							int o = page + 1;
-							p.closeInventory();
-							GUISetPage.setPage(p, o);
+							GUISetPage.setPage(p, o, e.getInventory());
 							e.setCancelled(true);
 						} else if (isRecord(is)) {
 							String songName = ChatColor.stripColor(name);
@@ -88,8 +77,7 @@ public class InventoryClickEH implements Listener {
 								if (sf.getName().equalsIgnoreCase(songName)) {
 									if (p.hasPermission("pseudomusic.play")) {
 										JukeboxController.setSong(p, sf);
-										p.closeInventory();
-										GUISetPage.setPage(p, page);
+										GUISetPage.setPage(p, page, e.getInventory());
 									} else {
 										PseudoMusic.message.sendPluginError(p, Errors.NO_PERMISSION, "select a song!");
 									}
@@ -104,31 +92,31 @@ public class InventoryClickEH implements Listener {
 	}
 
 	private static boolean isRecord(ItemStack is) {
-		String m = is.getType().name();
+		Material m = is.getType();
 		switch (m) {
-		case "GOLD_RECORD":
+		case MUSIC_DISC_13:
 			return true;
-		case "GREEN_RECORD":
+		case MUSIC_DISC_CAT:
 			return true;
-		case "RECORD_3":
+		case MUSIC_DISC_BLOCKS:
 			return true;
-		case "RECORD_4":
+		case MUSIC_DISC_CHIRP:
 			return true;
-		case "RECORD_5":
+		case MUSIC_DISC_FAR:
 			return true;
-		case "RECORD_6":
+		case MUSIC_DISC_MALL:
 			return true;
-		case "RECORD_7":
+		case MUSIC_DISC_MELLOHI:
 			return true;
-		case "RECORD_8":
+		case MUSIC_DISC_STAL:
 			return true;
-		case "RECORD_9":
+		case MUSIC_DISC_STRAD:
 			return true;
-		case "RECORD_10":
+		case MUSIC_DISC_WARD:
 			return true;
-		case "RECORD_11":
+		case MUSIC_DISC_11:
 			return true;
-		case "RECORD_12":
+		case MUSIC_DISC_WAIT:
 			return true;
 		default:
 			return false;
