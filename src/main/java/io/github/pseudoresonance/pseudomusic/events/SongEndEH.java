@@ -3,7 +3,7 @@ package io.github.pseudoresonance.pseudomusic.events;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import com.xxmicloxx.NoteBlockAPI.SongEndEvent;
+import com.xxmicloxx.NoteBlockAPI.event.SongEndEvent;
 
 import io.github.pseudoresonance.pseudomusic.ConfigOptions;
 import io.github.pseudoresonance.pseudomusic.Jukebox;

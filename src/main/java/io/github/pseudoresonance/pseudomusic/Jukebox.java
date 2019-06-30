@@ -9,9 +9,9 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.xxmicloxx.NoteBlockAPI.RadioSongPlayer;
-import com.xxmicloxx.NoteBlockAPI.SongPlayer;
-import com.xxmicloxx.NoteBlockAPI.SoundCategory;
+import com.xxmicloxx.NoteBlockAPI.songplayer.RadioSongPlayer;
+import com.xxmicloxx.NoteBlockAPI.songplayer.SongPlayer;
+import com.xxmicloxx.NoteBlockAPI.model.SoundCategory;
 
 import io.github.pseudoresonance.pseudoapi.bukkit.playerdata.PlayerDataController;
 

@@ -1,8 +1,9 @@
 name: PseudoMusic
 author: PseudoResonance
 main: io.github.pseudoresonance.pseudomusic.PseudoMusic
-version: 1.3.2
+version: 1.3.3
 description: Adds the ability to play music to players
+api-version: 1.13
 depend: [PseudoAPI,NoteBlockAPI]
 commands:
   pseudomusic:
