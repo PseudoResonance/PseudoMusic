@@ -84,7 +84,7 @@ public class SongFile {
 			this.barColor = BarColor.BLUE;
 			break;
 		}
-		this.song = NBSDecoder.parse(new File(ConfigOptions.songPath, file));
+		this.song = NBSDecoder.parse(new File(Config.songPath, file));
 	}
 	
 	public String getName() {

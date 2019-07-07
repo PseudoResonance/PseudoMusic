@@ -5,7 +5,7 @@ import org.bukkit.event.Listener;
 
 import com.xxmicloxx.NoteBlockAPI.event.SongEndEvent;
 
-import io.github.pseudoresonance.pseudomusic.ConfigOptions;
+import io.github.pseudoresonance.pseudomusic.Config;
 import io.github.pseudoresonance.pseudomusic.Jukebox;
 import io.github.pseudoresonance.pseudomusic.JukeboxController;
 import io.github.pseudoresonance.pseudomusic.PlayerType;
@@ -14,7 +14,7 @@ public class SongEndEH implements Listener {
 	
 	@EventHandler
 	public void songEnd(SongEndEvent e) {
-		if (ConfigOptions.playerType == PlayerType.GLOBAL) {
+		if (Config.playerType == PlayerType.GLOBAL) {
 			e.getSongPlayer().destroy();
 			JukeboxController.getJukebox().done();
 		} else {

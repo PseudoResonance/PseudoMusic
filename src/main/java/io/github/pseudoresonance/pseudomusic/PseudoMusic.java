@@ -19,6 +19,7 @@ import io.github.pseudoresonance.pseudoapi.bukkit.Message;
 import io.github.pseudoresonance.pseudoapi.bukkit.PseudoAPI;
 import io.github.pseudoresonance.pseudoapi.bukkit.PseudoPlugin;
 import io.github.pseudoresonance.pseudoapi.bukkit.PseudoUpdater;
+import io.github.pseudoresonance.pseudoapi.bukkit.data.PluginConfig;
 import io.github.pseudoresonance.pseudoapi.bukkit.playerdata.Column;
 import io.github.pseudoresonance.pseudoapi.bukkit.playerdata.PlayerDataController;
 import io.github.pseudoresonance.pseudomusic.commands.BrowseSC;
@@ -41,7 +42,7 @@ public class PseudoMusic extends PseudoPlugin implements Listener {
 	private static MainCommand mainCommand;
 	private static HelpSC helpSubCommand;
 	
-	private static ConfigOptions configOptions;
+	private static Config config;
 	
 	protected static List<SongFile> songs = new ArrayList<SongFile>();
 	private static Map<String, Integer> page = new HashMap<String, Integer>();
@@ -59,8 +60,8 @@ public class PseudoMusic extends PseudoPlugin implements Listener {
 		PlayerDataController.addColumn(new Column("musicShuffle", "BIT", "0"));
 		PlayerDataController.addColumn(new Column("musicRepeat", "BIT", "0"));
 		PlayerDataController.addColumn(new Column("musicSong", "SMALLINT(5) UNSIGNED", "0"));
-		configOptions = new ConfigOptions();
-		ConfigOptions.updateConfig();
+		config = new Config(this);
+		config.updateConfig();
 		message = new Message(this);
 		mainCommand = new MainCommand(plugin);
 		helpSubCommand = new HelpSC(plugin);
@@ -69,9 +70,9 @@ public class PseudoMusic extends PseudoPlugin implements Listener {
 		initializeSubCommands();
 		initializeListeners();
 		setCommandDescriptions();
-		configOptions.reloadConfig();
-		ConfigOptions.songPath.mkdir();
-		PseudoAPI.registerConfig(configOptions);
+		config.reloadConfig();
+		Config.songPath.mkdir();
+		PseudoAPI.registerConfig(config);
 		Bukkit.getServer().getPluginManager().registerEvents(this, this);
 		updateSongs();
 	}
@@ -82,8 +83,8 @@ public class PseudoMusic extends PseudoPlugin implements Listener {
         Bukkit.getScheduler().cancelTasks(this);
 	}
 	
-	public static ConfigOptions getConfigOptions() {
-		return PseudoMusic.configOptions;
+	public static PluginConfig getConfigOptions() {
+		return PseudoMusic.config;
 	}
 
 	private void initializeCommands() {
@@ -129,7 +130,7 @@ public class PseudoMusic extends PseudoPlugin implements Listener {
 	
 	public static void updateSongs() {
 		List<SongFile> songs = new ArrayList<SongFile>();
-		File file = ConfigOptions.songPath;
+		File file = Config.songPath;
 		String[] files = file.list();
 		Collections.sort(Arrays.asList(files), Collator.getInstance());
 		for (String string : files) {

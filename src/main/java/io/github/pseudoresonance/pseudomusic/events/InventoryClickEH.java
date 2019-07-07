@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import io.github.pseudoresonance.pseudoapi.bukkit.Message.Errors;
-import io.github.pseudoresonance.pseudomusic.ConfigOptions;
+import io.github.pseudoresonance.pseudomusic.Config;
 import io.github.pseudoresonance.pseudomusic.GUISetPage;
 import io.github.pseudoresonance.pseudomusic.JukeboxController;
 import io.github.pseudoresonance.pseudomusic.SongFile;
@@ -21,7 +21,7 @@ public class InventoryClickEH implements Listener {
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent e) {
 		String t = e.getView().getTitle();
-		if (t.equalsIgnoreCase(ConfigOptions.interfaceName)) {
+		if (t.equalsIgnoreCase(Config.interfaceName)) {
 			e.setCancelled(true);
 			Player p = (Player) e.getWhoClicked();
 			ItemStack is = e.getCurrentItem();

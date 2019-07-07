@@ -30,7 +30,7 @@ public class Jukebox {
 	
 	Jukebox(Player player) {
 		this.player = player;
-		String barMessage = ConfigOptions.barMessage;
+		String barMessage = Config.barMessage;
 		barMessage = barMessage.replace("{name}", "None");
 		barMessage = barMessage.replace("{cname}", "None");
 		barMessage = barMessage.replace("{time}", "0:00");
@@ -109,7 +109,7 @@ public class Jukebox {
 	public void kill(boolean logoff) {
 		if (!logoff)
 			PlayerDataController.setPlayerSetting(player.getUniqueId().toString(), "musicPlaying", false);
-		if (ConfigOptions.bossBar) {
+		if (Config.bossBar) {
 			if (barUpdate != null) {
 				barUpdate.cancel();
 			}
@@ -169,7 +169,7 @@ public class Jukebox {
 				if (songPlayer != null) {
 					songPlayer.destroy();
 				}
-				if (ConfigOptions.bossBar) {
+				if (Config.bossBar) {
 					if (barUpdate != null) {
 						barUpdate.cancel();
 					}
@@ -227,7 +227,7 @@ public class Jukebox {
 			if (songPlayer != null) {
 				songPlayer.destroy();
 			}
-			if (ConfigOptions.bossBar) {
+			if (Config.bossBar) {
 				if (barUpdate != null) {
 					barUpdate.cancel();
 				}
@@ -259,7 +259,7 @@ public class Jukebox {
 			if (songPlayer != null) {
 				songPlayer.destroy();
 			}
-			if (ConfigOptions.bossBar) {
+			if (Config.bossBar) {
 				if (barUpdate != null) {
 					barUpdate.cancel();
 				}
@@ -306,8 +306,8 @@ public class Jukebox {
 	}
 	
 	private void bossBar() {
-		if (ConfigOptions.bossBar) {
-			String barMessage = ConfigOptions.barMessage;
+		if (Config.bossBar) {
+			String barMessage = Config.barMessage;
 			barMessage = barMessage.replace("{name}", songFile.getName());
 			barMessage = barMessage.replace("{cname}", songFile.getColor() + songFile.getName());
 			int now = (int) Math.ceil(((double) songPlayer.getTick()) / songPlayer.getSong().getSpeed());
@@ -321,30 +321,30 @@ public class Jukebox {
 			bossBar.setProgress(0.0);
 			bossBar.addPlayer(player);
 			bossBar.setVisible(true);
-			if (ConfigOptions.barVisibility != 0) {
+			if (Config.barVisibility != 0) {
 				Bukkit.getScheduler().scheduleSyncDelayedTask(PseudoMusic.plugin, new Runnable() {
 					public void run() {
 						bossBar.setVisible(false);
 					}
-				}, ConfigOptions.barVisibility);
+				}, Config.barVisibility * 20);
 			} else {
 				barUpdate = new BarUpdate(this);
-				barUpdate.runTaskTimer(PseudoMusic.plugin, ConfigOptions.barUpdate, ConfigOptions.barUpdate);
+				barUpdate.runTaskTimer(PseudoMusic.plugin, Config.barUpdate, Config.barUpdate);
 			}
 		}
 	}
 	
 	private void title() {
-		if (ConfigOptions.title) {
-			String titleMessage = ConfigOptions.titleMessage;
+		if (Config.title) {
+			String titleMessage = Config.titleMessage;
 			titleMessage = titleMessage.replace("{name}", songFile.getName());
 			titleMessage = titleMessage.replace("{cname}", songFile.getColor() + songFile.getName());
-			player.sendTitle("", titleMessage, ConfigOptions.titleFade, ConfigOptions.titleVisibility, ConfigOptions.titleFade);
+			player.sendTitle("", titleMessage, Config.titleFade, Config.titleVisibility * 20, Config.titleFade);
 		}
 	}
 	
 	public void done() {
-		if (ConfigOptions.bossBar) {
+		if (Config.bossBar) {
 			if (barUpdate != null) {
 				barUpdate.cancel();
 			}
@@ -352,15 +352,13 @@ public class Jukebox {
 				bossBar.setVisible(false);
 			}
 		}
-		if (ConfigOptions.playlist) {
-			long d = new Long((int) Math.round(ConfigOptions.playlistDelay * 20));
-			if (ConfigOptions.autoStart) {
-				Bukkit.getScheduler().scheduleSyncDelayedTask(PseudoMusic.plugin, new Runnable() {
-					public void run() {
-						nextAutoSong();
-					}
-				}, d);
-			}
+		if (Config.playlist) {
+			long d = new Long((int) Math.round(Config.playlistDelay * 20));
+			Bukkit.getScheduler().scheduleSyncDelayedTask(PseudoMusic.plugin, new Runnable() {
+				public void run() {
+					nextAutoSong();
+				}
+			}, d);
 		}
 	}
 	
@@ -424,7 +422,7 @@ class BarUpdate extends BukkitRunnable {
 	
 	BarUpdate(Jukebox j) {
 		this.j = j;
-		barMessage = ConfigOptions.barMessage;
+		barMessage = Config.barMessage;
 		barMessage = barMessage.replace("{name}", j.songFile.getName());
 		barMessage = barMessage.replace("{cname}", j.songFile.getColor() + j.songFile.getName());
 	}
