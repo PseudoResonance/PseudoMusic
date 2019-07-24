@@ -118,10 +118,13 @@ public class JukeboxController {
 	
 	public static int getSongID(Player p) {
 		if (Config.playerType == PlayerType.PRIVATE) {
-			return jukeboxes.get(p).getSongID();
+			if (jukeboxes.get(p) != null)
+				return jukeboxes.get(p).getSongID();
 		} else {
-			return global.getSongID();
+			if (global != null)
+				return global.getSongID();
 		}
+		return 0;
 	}
 	
 	public static SongFile getNextSong(Player p) {

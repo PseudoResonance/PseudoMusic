@@ -43,7 +43,9 @@ public class Jukebox {
 				Object obj = PlayerDataController.getPlayerSetting(player.getUniqueId().toString(), "musicSong");
 				if (obj instanceof Integer) {
 					int song = (Integer) obj;
-					setSong(song);
+					if (song < PseudoMusic.songs.size() && song >= 0) {
+						setSong(song);
+					}
 				}
 			}
 		} else {
