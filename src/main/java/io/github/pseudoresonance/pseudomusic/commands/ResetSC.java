@@ -15,8 +15,8 @@ import io.github.pseudoresonance.pseudomusic.PseudoMusic;
 public class ResetSC implements SubCommandExecutor {
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if (sender instanceof Player) {
-			if (sender.hasPermission("pseudomusic.reset")) {
+		if (!(sender instanceof Player) || sender.hasPermission("pseudomusic.reset")) {
+			PseudoMusic.plugin.doAsync(() -> {
 				try {
 					File conf = new File(PseudoMusic.plugin.getDataFolder(), "config.yml");
 					conf.delete();
@@ -24,46 +24,27 @@ public class ResetSC implements SubCommandExecutor {
 					PseudoMusic.plugin.reloadConfig();
 				} catch (Exception e) {
 					PseudoMusic.message.sendPluginError(sender, Errors.GENERIC);
-					return false;
-				}
-				JukeboxController.kill();
-				for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-					JukeboxController.disconnect(p);
+					return;
 				}
 				PseudoMusic.getConfigOptions().reloadConfig();
 				PseudoMusic.updateSongs();
-				for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-					JukeboxController.connect(p);
-				}
-				JukeboxController.start();
-				PseudoMusic.message.sendPluginMessage(sender, "Plugin config reset!");
-				return true;
-			} else {
-				PseudoMusic.message.sendPluginError(sender, Errors.NO_PERMISSION, "reset the config!");
-				return false;
-			}
-		} else {
-			try {
-				File conf = new File(PseudoMusic.plugin.getDataFolder(), "config.yml");
-				conf.delete();
-				PseudoMusic.plugin.saveDefaultConfig();
-				PseudoMusic.plugin.reloadConfig();
-			} catch (Exception e) {
-				PseudoMusic.message.sendPluginError(sender, Errors.GENERIC);
-				return false;
-			}
-			JukeboxController.kill();
-			for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-				JukeboxController.disconnect(p);
-			}
-			PseudoMusic.getConfigOptions().reloadConfig();
-			PseudoMusic.updateSongs();
-			for (Player p : Bukkit.getServer().getOnlinePlayers()) {
-				JukeboxController.connect(p);
-			}
-			JukeboxController.start();
-			PseudoMusic.message.sendPluginMessage(sender, "Plugin config reset!");
+				PseudoMusic.plugin.doSync(() -> {
+					for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+						JukeboxController.disconnect(p);
+					}
+					JukeboxController.kill();
+					for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+						JukeboxController.connect(p);
+					}
+					JukeboxController.start();
+					PseudoMusic.message.sendPluginMessage(sender, "Plugin config reset!");
+				});
+				return;
+			});
 			return true;
+		} else {
+			PseudoMusic.message.sendPluginError(sender, Errors.NO_PERMISSION, "reset the config!");
+			return false;
 		}
 	}
 

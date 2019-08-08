@@ -21,7 +21,7 @@ public class SongFile {
 	SongFile(String file) {
 		this.name = file.replace(".nbs", "");
 		Random rand = new Random(seed(name));
-		int diskNumber = rand.nextInt((11 - 1) + 1) + 1;
+		int diskNumber = rand.nextInt(11) + 1;
 		switch(diskNumber) {
 		case 1:
 			this.disk = Material.MUSIC_DISC_13;

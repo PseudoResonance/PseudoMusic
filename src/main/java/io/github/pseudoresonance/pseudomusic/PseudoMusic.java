@@ -36,7 +36,7 @@ import io.github.pseudoresonance.pseudomusic.events.SongEndEH;
 
 public class PseudoMusic extends PseudoPlugin implements Listener {
 
-	public static PseudoPlugin plugin;
+	public static PseudoMusic plugin;
 	public static Message message;
 	
 	private static MainCommand mainCommand;
@@ -122,6 +122,14 @@ public class PseudoMusic extends PseudoPlugin implements Listener {
 		commandDescriptions.add(new CommandDescription("pseudomusic stop", "Stops the player", "pseudomusic.stop"));
 		commandDescriptions.add(new CommandDescription("pseudomusic repeat", "Enables/disables repeat", "pseudomusic.repeat"));
 		commandDescriptions.add(new CommandDescription("pseudomusic shuffle", "Enables/disables shuffle", "pseudomusic.shuffle"));
+	}
+	
+	public void doSync(Runnable run) {
+		Bukkit.getScheduler().runTask(this, run);
+	}
+	
+	public void doAsync(Runnable run) {
+		Bukkit.getScheduler().runTaskAsynchronously(this, run);
 	}
 	
 	public static SongFile[] getSongs() {

@@ -36,11 +36,11 @@ public class Jukebox {
 		barMessage = barMessage.replace("{time}", "0:00");
 		barMessage = barMessage.replace("{total}", "0:00");
 		bossBar = Bukkit.getServer().createBossBar(barMessage, BarColor.WHITE, BarStyle.SOLID);
-		Object o = PlayerDataController.getPlayerSetting(player.getUniqueId().toString(), "musicPlaying");
+		Object o = PlayerDataController.getPlayerSetting(player.getUniqueId().toString(), "musicPlaying").join();
 		if (o instanceof Boolean) {
 			boolean b = (Boolean) o;
 			if (b) {
-				Object obj = PlayerDataController.getPlayerSetting(player.getUniqueId().toString(), "musicSong");
+				Object obj = PlayerDataController.getPlayerSetting(player.getUniqueId().toString(), "musicSong").join();
 				if (obj instanceof Integer) {
 					int song = (Integer) obj;
 					if (song < PseudoMusic.songs.size() && song >= 0) {
@@ -216,7 +216,7 @@ public class Jukebox {
 	}
 	
 	public void start() {
-		Object obj = PlayerDataController.getPlayerSetting(player.getUniqueId().toString(), "musicSong");
+		Object obj = PlayerDataController.getPlayerSetting(player.getUniqueId().toString(), "musicSong").join();
 		if (obj instanceof Integer) {
 			int song = (Integer) obj;
 			setSong(song);

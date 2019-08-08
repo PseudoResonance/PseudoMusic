@@ -16,14 +16,14 @@ public class PlayerJoinLeaveEH implements Listener {
 	public void playerJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
 		JukeboxController.connect(p);
-		Object shuffle = PlayerDataController.getPlayerSetting(p.getUniqueId().toString(), "musicShuffle");
+		Object shuffle = PlayerDataController.getPlayerSetting(p.getUniqueId().toString(), "musicShuffle").join();
 		if (shuffle instanceof Boolean) {
 			boolean b = (Boolean) shuffle;
 			if (b) {
 				JukeboxController.setShuffle(p, true);
 			}
 		}
-		Object repeat = PlayerDataController.getPlayerSetting(p.getUniqueId().toString(), "musicRepeat");
+		Object repeat = PlayerDataController.getPlayerSetting(p.getUniqueId().toString(), "musicRepeat").join();
 		if (repeat instanceof Boolean) {
 			boolean b = (Boolean) repeat;
 			if (b) {

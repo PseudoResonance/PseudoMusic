@@ -1,7 +1,6 @@
 package io.github.pseudoresonance.pseudomusic.events;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -71,7 +70,7 @@ public class InventoryClickEH implements Listener {
 							int o = page + 1;
 							GUISetPage.setPage(p, o, e.getInventory());
 							e.setCancelled(true);
-						} else if (isRecord(is)) {
+						} else if (is.getType().isRecord()) {
 							String songName = ChatColor.stripColor(name);
 							for (SongFile sf : PseudoMusic.getSongs()) {
 								if (sf.getName().equalsIgnoreCase(songName)) {
@@ -88,38 +87,6 @@ public class InventoryClickEH implements Listener {
 					}
 				}
 			}
-		}
-	}
-
-	private static boolean isRecord(ItemStack is) {
-		Material m = is.getType();
-		switch (m) {
-		case MUSIC_DISC_13:
-			return true;
-		case MUSIC_DISC_CAT:
-			return true;
-		case MUSIC_DISC_BLOCKS:
-			return true;
-		case MUSIC_DISC_CHIRP:
-			return true;
-		case MUSIC_DISC_FAR:
-			return true;
-		case MUSIC_DISC_MALL:
-			return true;
-		case MUSIC_DISC_MELLOHI:
-			return true;
-		case MUSIC_DISC_STAL:
-			return true;
-		case MUSIC_DISC_STRAD:
-			return true;
-		case MUSIC_DISC_WARD:
-			return true;
-		case MUSIC_DISC_11:
-			return true;
-		case MUSIC_DISC_WAIT:
-			return true;
-		default:
-			return false;
 		}
 	}
 
