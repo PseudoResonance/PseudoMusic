@@ -308,11 +308,19 @@ public class GlobalJukebox {
 		}
 	}
 	
+	public short getSongPosition() {
+		if (playing) {
+			songPlayer.getTick();
+		}
+		return -1;
+	}
+	
 	private void startSong() {
 		songPlayer = new RadioSongPlayer(songFile.getSong(), SoundCategory.RECORDS);
 		for (Player p : listening) {
 			songPlayer.addPlayer(p);
 		}
+		songPlayer.setAutoDestroy(true);
 		songPlayer.setPlaying(true);
 		playing = true;
 	}

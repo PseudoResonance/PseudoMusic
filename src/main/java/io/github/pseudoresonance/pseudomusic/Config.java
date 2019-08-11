@@ -43,6 +43,7 @@ public class Config extends PluginConfig {
 	public static int shuffleLocation = 7;
 	public static String stopShuffleName = "Disable Shuffle";
 	public static Material stopShuffleMaterial = Material.STRUCTURE_VOID;
+	public static long restartSongIfOfflineFor = 60;
 	
 	public static boolean bossBar = true;
 	public static int barVisibility = 0;
@@ -149,6 +150,7 @@ public class Config extends PluginConfig {
 			shuffleLocation = 7;
 			Message.sendConsoleMessage(ChatColor.RED + "Default item locations have been used!");
 		}
+		restartSongIfOfflineFor = PluginConfig.getLong(fc, "RestartSongIfOfflineFor", restartSongIfOfflineFor);
 
 		bossBar = PluginConfig.getBoolean(fc, "BossBar", bossBar);
 		barVisibility = PluginConfig.getInt(fc, "BarVisibility", barVisibility);

@@ -19,7 +19,7 @@ public class SongEndEH implements Listener {
 			JukeboxController.getJukebox().done();
 		} else {
 			for (Jukebox j : JukeboxController.getJukeboxes()) {
-				if (e.getSongPlayer() == j.getSongPlayer()) {
+				if (e.getSongPlayer().equals(j.getSongPlayer())) {
 					e.getSongPlayer().destroy();
 					j.done();
 					break;

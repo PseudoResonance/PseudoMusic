@@ -28,6 +28,12 @@ public class PseudoMusicTC implements TabCompleter {
 			if (sender.hasPermission("pseudomusic.stop")) {
 				possible.add("stop");
 			}
+			if (sender.hasPermission("pseudomusic.shuffle")) {
+				possible.add("shuffle");
+			}
+			if (sender.hasPermission("pseudomusic.repeat")) {
+				possible.add("repeat");
+			}
 			if (args[0].equalsIgnoreCase("")) {
 				return possible;
 			} else {

@@ -5,17 +5,49 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
+import io.github.pseudoresonance.pseudoapi.bukkit.playerdata.PlayerDataController;
 
 public class JukeboxController {
 	
-	private static Map<Player, Jukebox> jukeboxes = new HashMap<Player, Jukebox>();
+	private static Map<String, Jukebox> jukeboxes = new HashMap<String, Jukebox>();
 	private static GlobalJukebox global = new GlobalJukebox();
 	
 	public static void connect(Player p) {
 		if (Config.playerType == PlayerType.PRIVATE) {
-			Jukebox j = new Jukebox(p);
-			jukeboxes.put(p, j);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(PseudoMusic.plugin, () -> {
+				Object continueO = PlayerDataController.getPlayerSetting(p.getUniqueId().toString(), "musicContinue", true).join();
+				Jukebox j = null;
+				if (continueO != null && continueO instanceof Boolean) {
+					boolean cont = (Boolean) continueO;
+					if (cont) {
+						Object positionO = PlayerDataController.getPlayerSetting(p.getUniqueId().toString(), "musicPosition", true).join();
+						if (positionO != null && positionO instanceof Integer) {
+							int position = (Integer) positionO;
+							j = new Jukebox(p, true, (short) position);
+						}
+					}
+				}
+				if (j == null)
+					j = new Jukebox(p);
+				Object shuffle = PlayerDataController.getPlayerSetting(p.getUniqueId().toString(), "musicShuffle", true).join();
+				if (shuffle instanceof Boolean) {
+					boolean b = (Boolean) shuffle;
+					if (b) {
+						j.setShuffle(true);
+					}
+				}
+				Object repeat = PlayerDataController.getPlayerSetting(p.getUniqueId().toString(), "musicRepeat", true).join();
+				if (repeat instanceof Boolean) {
+					boolean b = (Boolean) repeat;
+					if (b) {
+						j.setRepeat(true);
+					}
+				}
+				jukeboxes.put(p.getName(), j);
+			}, 10);
 		} else {
 			global.addPlayer(p);
 		}
@@ -23,8 +55,8 @@ public class JukeboxController {
 	
 	public static void disconnect(Player p) {
 		if (Config.playerType == PlayerType.PRIVATE) {
-			jukeboxes.get(p).kill(true);
-			jukeboxes.remove(p);
+			jukeboxes.get(p.getName()).kill(true);
+			jukeboxes.remove(p.getName());
 		} else {
 			global.removePlayer(p);
 		}
@@ -33,7 +65,7 @@ public class JukeboxController {
 	public static void kill() {
 		if (Config.playerType == PlayerType.PRIVATE) {
 			for (Jukebox j : jukeboxes.values()) {
-				j.kill(false);
+				j.kill(true);
 			}
 		} else {
 			global.kill();
@@ -52,7 +84,7 @@ public class JukeboxController {
 	
 	public static void startPlayer(Player p) {
 		if (Config.playerType == PlayerType.PRIVATE) {
-			jukeboxes.get(p).start();
+			jukeboxes.get(p.getName()).start();
 		} else {
 			global.start();
 		}
@@ -60,7 +92,7 @@ public class JukeboxController {
 	
 	public static void nextSong(Player p) {
 		if (Config.playerType == PlayerType.PRIVATE) {
-			jukeboxes.get(p).nextSong();
+			jukeboxes.get(p.getName()).nextSong();
 		} else {
 			global.nextSong();
 		}
@@ -68,7 +100,7 @@ public class JukeboxController {
 	
 	public static void setSong(Player p, SongFile sf) {
 		if (Config.playerType == PlayerType.PRIVATE) {
-			jukeboxes.get(p).setSong(sf);
+			jukeboxes.get(p.getName()).setSong(sf);
 		} else {
 			global.setSong(sf);
 		}
@@ -76,7 +108,7 @@ public class JukeboxController {
 	
 	public static void lastSong(Player p) {
 		if (Config.playerType == PlayerType.PRIVATE) {
-			jukeboxes.get(p).lastSong();
+			jukeboxes.get(p.getName()).lastSong();
 		} else {
 			global.lastSong();
 		}
@@ -84,7 +116,7 @@ public class JukeboxController {
 	
 	public static void setRepeat(Player p, boolean value) {
 		if (Config.playerType == PlayerType.PRIVATE) {
-			jukeboxes.get(p).setRepeat(value);
+			jukeboxes.get(p.getName()).setRepeat(value);
 		} else {
 			global.setRepeat(value);
 		}
@@ -92,7 +124,7 @@ public class JukeboxController {
 	
 	public static void setShuffle(Player p, boolean value) {
 		if (Config.playerType == PlayerType.PRIVATE) {
-			jukeboxes.get(p).setShuffle(value);
+			jukeboxes.get(p.getName()).setShuffle(value);
 		} else {
 			global.setShuffle(value);
 		}
@@ -100,7 +132,7 @@ public class JukeboxController {
 	
 	public static SongFile getSong(Player p) {
 		if (Config.playerType == PlayerType.PRIVATE) {
-			SongFile sf = jukeboxes.get(p).getSong();
+			SongFile sf = jukeboxes.get(p.getName()).getSong();
 			if (sf != null) {
 				return sf;
 			} else {
@@ -118,8 +150,8 @@ public class JukeboxController {
 	
 	public static int getSongID(Player p) {
 		if (Config.playerType == PlayerType.PRIVATE) {
-			if (jukeboxes.get(p) != null)
-				return jukeboxes.get(p).getSongID();
+			if (jukeboxes.get(p.getName()) != null)
+				return jukeboxes.get(p.getName()).getSongID();
 		} else {
 			if (global != null)
 				return global.getSongID();
@@ -127,9 +159,20 @@ public class JukeboxController {
 		return 0;
 	}
 	
+	public static short getSongPosition(Player p) {
+		if (Config.playerType == PlayerType.PRIVATE) {
+			if (jukeboxes.get(p.getName()) != null)
+				return jukeboxes.get(p.getName()).getSongPosition();
+		} else {
+			if (global != null)
+				return global.getSongPosition();
+		}
+		return 0;
+	}
+	
 	public static SongFile getNextSong(Player p) {
 		if (Config.playerType == PlayerType.PRIVATE) {
-			return jukeboxes.get(p).getNextSong();
+			return jukeboxes.get(p.getName()).getNextSong();
 		} else {
 			return global.getNextSong();
 		}
@@ -137,27 +180,23 @@ public class JukeboxController {
 	
 	public static SongFile getLastSong(Player p) {
 		if (Config.playerType == PlayerType.PRIVATE) {
-			return jukeboxes.get(p).getLastSong();
+			return jukeboxes.get(p.getName()).getLastSong();
 		} else {
 			return global.getLastSong();
 		}
 	}
 	
 	public static void stopSong(Player p) {
-		if (p.hasPermission("pseudomusic.stop")) {
-			if (Config.playerType == PlayerType.PRIVATE) {
-				jukeboxes.get(p).kill(false);
-			} else {
-				global.kill();
-			}
+		if (Config.playerType == PlayerType.PRIVATE) {
+			jukeboxes.get(p.getName()).kill(false);
 		} else {
-			
+			global.kill();
 		}
 	}
 	
 	public static boolean isPlaying(Player p) {
 		if (Config.playerType == PlayerType.PRIVATE) {
-			return jukeboxes.get(p).isPlaying();
+			return jukeboxes.get(p.getName()).isPlaying();
 		} else {
 			return global.isPlaying();
 		}
@@ -165,7 +204,7 @@ public class JukeboxController {
 	
 	public static boolean isRepeating(Player p) {
 		if (Config.playerType == PlayerType.PRIVATE) {
-			return jukeboxes.get(p).isRepeating();
+			return jukeboxes.get(p.getName()).isRepeating();
 		} else {
 			return global.isRepeating();
 		}
@@ -173,7 +212,7 @@ public class JukeboxController {
 	
 	public static boolean isShuffling(Player p) {
 		if (Config.playerType == PlayerType.PRIVATE) {
-			return jukeboxes.get(p).isShuffling();
+			return jukeboxes.get(p.getName()).isShuffling();
 		} else {
 			return global.isShuffling();
 		}

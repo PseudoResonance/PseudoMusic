@@ -97,6 +97,10 @@ ShuffleLocation: 7
 StopShuffleName: "Disable Shuffle"
 StopShuffleMaterial: Structure_Void
 
+# Restart song to beginning if offline for specified amount of time (in seconds)
+# Set to -1 to always restart the song at last position
+RestartSongIfOfflineFor: 60
+
 
 ###########
 # BossBar #

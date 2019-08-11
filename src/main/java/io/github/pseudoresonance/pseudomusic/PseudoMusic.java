@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 import io.github.pseudoresonance.pseudoapi.bukkit.CommandDescription;
@@ -60,6 +61,8 @@ public class PseudoMusic extends PseudoPlugin implements Listener {
 		PlayerDataController.addColumn(new Column("musicShuffle", "BIT", "0"));
 		PlayerDataController.addColumn(new Column("musicRepeat", "BIT", "0"));
 		PlayerDataController.addColumn(new Column("musicSong", "SMALLINT(5) UNSIGNED", "0"));
+		PlayerDataController.addColumn(new Column("musicPosition", "SMALLINT(5)", "0"));
+		PlayerDataController.addColumn(new Column("musicContinue", "BIT", "0"));
 		config = new Config(this);
 		config.updateConfig();
 		message = new Message(this);
@@ -74,7 +77,15 @@ public class PseudoMusic extends PseudoPlugin implements Listener {
 		Config.songPath.mkdir();
 		PseudoAPI.registerConfig(config);
 		Bukkit.getServer().getPluginManager().registerEvents(this, this);
-		updateSongs();
+		doAsync(() -> {
+			updateSongs();
+			doSync(() -> {
+				for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+					JukeboxController.connect(p);
+				}
+				PlayerJoinLeaveEH.initComplete();
+			});
+		});
 	}
 	
 	@Override
@@ -137,6 +148,8 @@ public class PseudoMusic extends PseudoPlugin implements Listener {
 	}
 	
 	public static void updateSongs() {
+		long start = System.nanoTime();
+		message.sendConsolePluginMessage("Loading music...");
 		List<SongFile> songs = new ArrayList<SongFile>();
 		File file = Config.songPath;
 		String[] files = file.list();
@@ -147,6 +160,9 @@ public class PseudoMusic extends PseudoPlugin implements Listener {
 			}
 		}
 		PseudoMusic.songs = songs;
+		long diff = System.nanoTime() - start;
+		diff /= 1000000;
+		message.sendConsolePluginMessage("Done loading music! Operation took " + diff + "ms to load " + songs.size() + " songs!");
 	}
 	
 	public static Map<String, Integer> getPages() {

@@ -3,10 +3,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.PseudoResonance</groupId>
 	<artifactId>PseudoMusic</artifactId>
-	<version>${version}-SNAPSHOT</version>
+	<version>${revision}-SNAPSHOT</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<version>1.5</version>
+		<revision>1.5.1</revision>
 	</properties>
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>

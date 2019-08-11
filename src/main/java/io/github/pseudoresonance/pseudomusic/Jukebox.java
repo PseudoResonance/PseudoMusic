@@ -29,6 +29,10 @@ public class Jukebox {
 	private Random random = new Random();
 	
 	Jukebox(Player player) {
+		this(player, false, (short) 0);
+	}
+	
+	Jukebox(Player player, boolean cont, short position) {
 		this.player = player;
 		String barMessage = Config.barMessage;
 		barMessage = barMessage.replace("{name}", "None");
@@ -44,7 +48,10 @@ public class Jukebox {
 				if (obj instanceof Integer) {
 					int song = (Integer) obj;
 					if (song < PseudoMusic.songs.size() && song >= 0) {
-						setSong(song);
+						if (cont)
+							setSong(song, position);
+						else
+							setSong(song);
 					}
 				}
 			}
@@ -54,16 +61,26 @@ public class Jukebox {
 	}
 
 	public void setSong(SongFile sf) {
-		kill(false);
+		setSong(sf, (short) 0);
+	}
+
+	public void setSong(SongFile sf, short position) {
+		kill(true);
 		stopped = false;
 		songFile = sf;
-		startSong();
+		if (position < 0)
+			position = 0;
+		startSong(position);
 		bossBar();
 		title();
 	}
 	
 	public void setSong(int id) {
-		kill(false);
+		setSong(id, (short) 0);
+	}
+	
+	public void setSong(int id, short position) {
+		kill(true);
 		stopped = false;
 		SongFile sf = PseudoMusic.songs.get(id);
 		if (sf == null) {
@@ -72,8 +89,10 @@ public class Jukebox {
 			}
 		}
 		if (sf != null) {
+			if (position < 0)
+				position = 0;
 			songFile = sf;
-			startSong();
+			startSong(position);
 			bossBar();
 			title();
 		}
@@ -108,8 +127,8 @@ public class Jukebox {
 		return shuffle;
 	}
 	
-	public void kill(boolean logoff) {
-		if (!logoff)
+	public void kill(boolean temporaryStop) {
+		if (!temporaryStop)
 			PlayerDataController.setPlayerSetting(player.getUniqueId().toString(), "musicPlaying", false);
 		if (Config.bossBar) {
 			if (barUpdate != null) {
@@ -287,7 +306,19 @@ public class Jukebox {
 		}
 	}
 	
+	public short getSongPosition() {
+		if (songPlayer != null)
+			return songPlayer.getTick();
+		if (playing)
+			return 0;
+		return -1;
+	}
+	
 	private void startSong() {
+		startSong((short) 0);
+	}
+	
+	private void startSong(short position) {
 		PlayerDataController.setPlayerSetting(player.getUniqueId().toString(), "musicPlaying", true);
 		PlayerDataController.setPlayerSetting(player.getUniqueId().toString(), "musicSong", getSongID());
 		if (PseudoMusic.songs.size() >= 1) {
@@ -300,8 +331,8 @@ public class Jukebox {
 		}
 		if (songFile != null) {
 			songPlayer = new RadioSongPlayer(songFile.getSong(), SoundCategory.RECORDS);
-			songPlayer.setAutoDestroy(true);
 			songPlayer.addPlayer(player);
+			songPlayer.setTick(position);
 			songPlayer.setPlaying(true);
 			playing = true;
 		}
