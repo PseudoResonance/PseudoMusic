@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import io.github.pseudoresonance.pseudoapi.bukkit.playerdata.PlayerDataController;
@@ -17,37 +16,22 @@ public class JukeboxController {
 	
 	public static void connect(Player p) {
 		if (Config.playerType == PlayerType.PRIVATE) {
-			Bukkit.getScheduler().scheduleSyncDelayedTask(PseudoMusic.plugin, () -> {
-				Object continueO = PlayerDataController.getPlayerSetting(p.getUniqueId().toString(), "musicContinue", true).join();
-				Jukebox j = null;
-				if (continueO != null && continueO instanceof Boolean) {
-					boolean cont = (Boolean) continueO;
-					if (cont) {
-						Object positionO = PlayerDataController.getPlayerSetting(p.getUniqueId().toString(), "musicPosition", true).join();
-						if (positionO != null && positionO instanceof Integer) {
-							int position = (Integer) positionO;
-							j = new Jukebox(p, true, (short) position);
-						}
-					}
+			Jukebox j = new Jukebox(p);
+			Object shuffle = PlayerDataController.getPlayerSetting(p.getUniqueId().toString(), "musicShuffle", true).join();
+			if (shuffle instanceof Boolean) {
+				boolean b = (Boolean) shuffle;
+				if (b) {
+					j.setShuffle(true);
 				}
-				if (j == null)
-					j = new Jukebox(p);
-				Object shuffle = PlayerDataController.getPlayerSetting(p.getUniqueId().toString(), "musicShuffle", true).join();
-				if (shuffle instanceof Boolean) {
-					boolean b = (Boolean) shuffle;
-					if (b) {
-						j.setShuffle(true);
-					}
+			}
+			Object repeat = PlayerDataController.getPlayerSetting(p.getUniqueId().toString(), "musicRepeat", true).join();
+			if (repeat instanceof Boolean) {
+				boolean b = (Boolean) repeat;
+				if (b) {
+					j.setRepeat(true);
 				}
-				Object repeat = PlayerDataController.getPlayerSetting(p.getUniqueId().toString(), "musicRepeat", true).join();
-				if (repeat instanceof Boolean) {
-					boolean b = (Boolean) repeat;
-					if (b) {
-						j.setRepeat(true);
-					}
-				}
-				jukeboxes.put(p.getName(), j);
-			}, 10);
+			}
+			jukeboxes.put(p.getName(), j);
 		} else {
 			global.addPlayer(p);
 		}

@@ -29,10 +29,6 @@ public class Jukebox {
 	private Random random = new Random();
 	
 	Jukebox(Player player) {
-		this(player, false, (short) 0);
-	}
-	
-	Jukebox(Player player, boolean cont, short position) {
 		this.player = player;
 		String barMessage = Config.barMessage;
 		barMessage = barMessage.replace("{name}", "None");
@@ -40,43 +36,54 @@ public class Jukebox {
 		barMessage = barMessage.replace("{time}", "0:00");
 		barMessage = barMessage.replace("{total}", "0:00");
 		bossBar = Bukkit.getServer().createBossBar(barMessage, BarColor.WHITE, BarStyle.SOLID);
-		Object o = PlayerDataController.getPlayerSetting(player.getUniqueId().toString(), "musicPlaying").join();
-		if (o instanceof Boolean) {
-			boolean b = (Boolean) o;
-			if (b) {
-				Object obj = PlayerDataController.getPlayerSetting(player.getUniqueId().toString(), "musicSong").join();
-				if (obj instanceof Integer) {
-					int song = (Integer) obj;
-					if (song < PseudoMusic.songs.size() && song >= 0) {
-						if (cont)
-							setSong(song, position);
-						else
+		Bukkit.getScheduler().scheduleSyncDelayedTask(PseudoMusic.plugin, () -> {
+			Object o = PlayerDataController.getPlayerSetting(player.getUniqueId().toString(), "musicPlaying").join();
+			if (o instanceof Boolean) {
+				boolean b = (Boolean) o;
+				if (b) {
+					Object obj = PlayerDataController.getPlayerSetting(player.getUniqueId().toString(), "musicSong").join();
+					if (obj instanceof Integer) {
+						int song = (Integer) obj;
+						if (song < PseudoMusic.songs.size() && song >= 0) {
+							Object continueO = PlayerDataController.getPlayerSetting(player.getUniqueId().toString(), "musicContinue", true).join();
+							if (continueO != null && continueO instanceof Boolean) {
+								boolean cont = (Boolean) continueO;
+								if (cont) {
+									Object positionO = PlayerDataController.getPlayerSetting(player.getUniqueId().toString(), "musicPosition", true).join();
+									if (positionO != null && positionO instanceof Integer) {
+										int position = (Integer) positionO;
+										setSong(song, (short) position);
+										return;
+									}
+								}
+							}
 							setSong(song);
+						}
 					}
 				}
+			} else {
+				nextSong();
 			}
-		} else {
-			nextSong();
-		}
+		}, 10);
 	}
 
 	public void setSong(SongFile sf) {
-		setSong(sf, (short) 0);
+		setSong(sf, (short) -1);
 	}
 
 	public void setSong(SongFile sf, short position) {
 		kill(true);
 		stopped = false;
 		songFile = sf;
-		if (position < 0)
-			position = 0;
+		if (position < -1)
+			position = -1;
 		startSong(position);
 		bossBar();
 		title();
 	}
 	
 	public void setSong(int id) {
-		setSong(id, (short) 0);
+		setSong(id, (short) -1);
 	}
 	
 	public void setSong(int id, short position) {
@@ -89,8 +96,8 @@ public class Jukebox {
 			}
 		}
 		if (sf != null) {
-			if (position < 0)
-				position = 0;
+			if (position < -1)
+				position = -1;
 			songFile = sf;
 			startSong(position);
 			bossBar();
@@ -315,7 +322,7 @@ public class Jukebox {
 	}
 	
 	private void startSong() {
-		startSong((short) 0);
+		startSong((short) -1);
 	}
 	
 	private void startSong(short position) {
