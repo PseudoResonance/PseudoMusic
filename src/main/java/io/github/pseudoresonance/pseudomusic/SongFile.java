@@ -85,6 +85,9 @@ public class SongFile {
 			break;
 		}
 		this.song = NBSDecoder.parse(new File(Config.songPath, file));
+		if (song == null) {
+			throw new RuntimeException("NBS File: " + file + " could not be loaded!");
+		}
 	}
 	
 	public String getName() {

@@ -34,6 +34,7 @@ import io.github.pseudoresonance.pseudomusic.completers.PseudoMusicTC;
 import io.github.pseudoresonance.pseudomusic.events.InventoryClickEH;
 import io.github.pseudoresonance.pseudomusic.events.PlayerJoinLeaveEH;
 import io.github.pseudoresonance.pseudomusic.events.SongEndEH;
+import net.md_5.bungee.api.ChatColor;
 
 public class PseudoMusic extends PseudoPlugin implements Listener {
 
@@ -154,15 +155,24 @@ public class PseudoMusic extends PseudoPlugin implements Listener {
 		File file = Config.songPath;
 		String[] files = file.list();
 		Collections.sort(Arrays.asList(files), Collator.getInstance());
+		int failedCounter = 0;
 		for (String string : files) {
 			if (string.endsWith(".nbs")) {
-				songs.add(new SongFile(string));
+				try {
+					SongFile sf = new SongFile(string);
+					songs.add(sf);
+				} catch (RuntimeException e) {
+					failedCounter++;
+				}
 			}
 		}
 		PseudoMusic.songs = songs;
 		long diff = System.nanoTime() - start;
 		diff /= 1000000;
-		message.sendConsolePluginMessage("Done loading music! Operation took " + diff + "ms to load " + songs.size() + " songs!");
+		String endMessage = "Done loading music! Operation took " + diff + "ms to load " + songs.size() + " songs!";
+		if (failedCounter > 0)
+			endMessage += " " + ChatColor.RED + failedCounter + " songs failed to load!";
+		message.sendConsolePluginMessage(endMessage);
 	}
 	
 	public static Map<String, Integer> getPages() {
