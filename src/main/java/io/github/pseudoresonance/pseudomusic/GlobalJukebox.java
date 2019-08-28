@@ -20,13 +20,14 @@ public class GlobalJukebox {
 	protected List<Player> listening = new ArrayList<Player>();
 	protected SongFile songFile;
 	protected SongPlayer songPlayer;
-	protected boolean playing = false;
+	protected volatile boolean playing = false;
 	protected BossBar bossBar;
 	protected boolean bossBarVisibility = false;
 	protected GlobalBarUpdate barUpdate;
 	protected boolean repeat = false;
 	protected boolean shuffle = false;
-	protected boolean stopped = true;
+	protected volatile boolean stopped = true;
+	protected volatile boolean cancelAutoRun = false;
 	private Random random = new Random();
 	
 	GlobalJukebox() {
@@ -40,12 +41,43 @@ public class GlobalJukebox {
 	}
 
 	public void setSong(SongFile sf) {
+		setSong(sf, (short) -1);
+	}
+
+	public void setSong(SongFile sf, short position) {
 		kill();
 		stopped = false;
 		songFile = sf;
-		startSong();
+		if (position < -1)
+			position = -1;
+		startSong(position);
 		bossBar();
 		title();
+		cancelAutoRun = true;
+	}
+	
+	public void setSong(int id) {
+		setSong(id, (short) -1);
+	}
+	
+	public void setSong(int id, short position) {
+		kill();
+		stopped = false;
+		SongFile sf = PseudoMusic.songs.get(id);
+		if (sf == null) {
+			if (PseudoMusic.songs.size() >= 1) {
+				sf = PseudoMusic.songs.get(0);
+			}
+		}
+		if (sf != null) {
+			if (position < -1)
+				position = -1;
+			songFile = sf;
+			startSong(position);
+			bossBar();
+			title();
+			cancelAutoRun = true;
+		}
 	}
 	
 	public void addPlayer(Player p) {
@@ -119,6 +151,7 @@ public class GlobalJukebox {
 		songPlayer = null;
 		playing = false;
 		stopped = true;
+		cancelAutoRun = true;
 	}
 	
 	public SongFile getNextSong() {
@@ -239,6 +272,7 @@ public class GlobalJukebox {
 			startSong();
 			bossBar();
 			title();
+			cancelAutoRun = true;
 		}
 	}
 	
@@ -272,6 +306,7 @@ public class GlobalJukebox {
 			startSong();
 			bossBar();
 			title();
+			cancelAutoRun = true;
 		}
 	}
 	
@@ -305,22 +340,29 @@ public class GlobalJukebox {
 			startSong();
 			bossBar();
 			title();
+			cancelAutoRun = true;
 		}
 	}
 	
 	public short getSongPosition() {
-		if (playing) {
+		if (playing)
 			songPlayer.getTick();
-		}
+		if (playing)
+			return 0;
 		return -1;
 	}
 	
 	private void startSong() {
+		startSong((short) -1);
+	}
+	
+	private void startSong(short position) {
 		songPlayer = new RadioSongPlayer(songFile.getSong(), SoundCategory.RECORDS);
 		for (Player p : listening) {
 			songPlayer.addPlayer(p);
 		}
 		songPlayer.setAutoDestroy(true);
+		songPlayer.setTick(position);
 		songPlayer.setPlaying(true);
 		playing = true;
 	}
@@ -382,7 +424,8 @@ public class GlobalJukebox {
 			long d = new Long((int) Math.round(Config.playlistDelay * 20));
 			Bukkit.getScheduler().scheduleSyncDelayedTask(PseudoMusic.plugin, new Runnable() {
 				public void run() {
-					nextAutoSong();
+					if (!cancelAutoRun)
+						nextAutoSong();
 				}
 			}, d);
 		}

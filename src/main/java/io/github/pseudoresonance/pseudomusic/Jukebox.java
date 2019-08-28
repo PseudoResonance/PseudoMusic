@@ -20,12 +20,13 @@ public class Jukebox {
 	protected Player player;
 	protected SongFile songFile;
 	protected SongPlayer songPlayer;
-	protected boolean playing = false;
+	protected volatile boolean playing = false;
 	protected BossBar bossBar;
 	protected BarUpdate barUpdate;
 	protected boolean repeat = false;
 	protected boolean shuffle = false;
-	protected boolean stopped = true;
+	protected volatile boolean stopped = true;
+	protected volatile boolean cancelAutoRun = false;
 	private Random random = new Random();
 	
 	Jukebox(Player player) {
@@ -80,6 +81,7 @@ public class Jukebox {
 		startSong(position);
 		bossBar();
 		title();
+		cancelAutoRun = true;
 	}
 	
 	public void setSong(int id) {
@@ -102,6 +104,7 @@ public class Jukebox {
 			startSong(position);
 			bossBar();
 			title();
+			cancelAutoRun = true;
 		}
 	}
 	
@@ -151,6 +154,7 @@ public class Jukebox {
 		songPlayer = null;
 		playing = false;
 		stopped = true;
+		cancelAutoRun = true;
 	}
 	
 	public SongFile getNextSong() {
@@ -246,6 +250,7 @@ public class Jukebox {
 		if (obj instanceof Integer) {
 			int song = (Integer) obj;
 			setSong(song);
+			cancelAutoRun = true;
 		}
 	}
 	
@@ -278,6 +283,7 @@ public class Jukebox {
 			startSong();
 			bossBar();
 			title();
+			cancelAutoRun = true;
 		}
 	}
 	
@@ -310,6 +316,7 @@ public class Jukebox {
 			startSong();
 			bossBar();
 			title();
+			cancelAutoRun = true;
 		}
 	}
 	
@@ -394,9 +401,11 @@ public class Jukebox {
 		}
 		if (Config.playlist) {
 			long d = new Long((int) Math.round(Config.playlistDelay * 20));
+			cancelAutoRun = false;
 			Bukkit.getScheduler().scheduleSyncDelayedTask(PseudoMusic.plugin, new Runnable() {
 				public void run() {
-					nextAutoSong();
+					if (!cancelAutoRun)
+						nextAutoSong();
 				}
 			}, d);
 		}
