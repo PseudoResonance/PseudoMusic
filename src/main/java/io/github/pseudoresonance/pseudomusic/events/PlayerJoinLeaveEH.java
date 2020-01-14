@@ -12,7 +12,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import io.github.pseudoresonance.pseudoapi.bukkit.playerdata.PlayerDataController;
 import io.github.pseudoresonance.pseudomusic.Config;
 import io.github.pseudoresonance.pseudomusic.JukeboxController;
-import io.github.pseudoresonance.pseudomusic.PlayerType;
+import io.github.pseudoresonance.pseudomusic.JukeboxController.PlayerType;
 import io.github.pseudoresonance.pseudomusic.PseudoMusic;
 
 public class PlayerJoinLeaveEH implements Listener {

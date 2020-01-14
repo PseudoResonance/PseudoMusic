@@ -4,7 +4,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import io.github.pseudoresonance.pseudoapi.bukkit.Message.Errors;
+import io.github.pseudoresonance.pseudoapi.bukkit.Chat.Errors;
+import io.github.pseudoresonance.pseudoapi.bukkit.language.LanguageManager;
 import io.github.pseudoresonance.pseudoapi.bukkit.SubCommandExecutor;
 import io.github.pseudoresonance.pseudomusic.GUISetPage;
 import io.github.pseudoresonance.pseudomusic.SongFile;
@@ -28,14 +29,14 @@ public class BrowseSC implements SubCommandExecutor {
 						GUISetPage.setPage((Player) sender, 1);
 					}
 				} else {
-					PseudoMusic.message.sendPluginError(sender, Errors.CUSTOM, "There are no songs on the server!");
+					PseudoMusic.plugin.getChat().sendPluginError(sender, Errors.CUSTOM, LanguageManager.getLanguage(sender).getMessage("pseudomusic.error_no_songs"));
 				}
 			} else {
-				PseudoMusic.message.sendPluginError(sender, Errors.NO_PERMISSION, "browse the music!");
+				PseudoMusic.plugin.getChat().sendPluginError(sender, Errors.NO_PERMISSION, LanguageManager.getLanguage(sender).getMessage("pseudomusic.permission_browse"));
 				return false;
 			}
 		} else {
-			PseudoMusic.message.sendPluginError(sender, Errors.CUSTOM, "This command is for players only!");
+			PseudoMusic.plugin.getChat().sendPluginError(sender, Errors.CUSTOM, LanguageManager.getLanguage(sender).getMessage("pseudomusic.error_players_only"));
 			return false;
 		}
 		return true;

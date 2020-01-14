@@ -3,7 +3,7 @@
 ######################
 
 # DO NOT CHANGE THIS LINE! YOUR CONFIG WILL BE RESET UPON LOADING IF THIS LINE IS EDITED!
-Version: 5
+Version: 6
 
 
 ##########
@@ -27,74 +27,51 @@ PlaylistDelay: 5
 # Song Folder Path (From PseudoMusic Plugin Folder)
 SongPath: songs
 
-# Interface Name
-InterfaceName: "&c&lPseudoMusic"
-
 # Last Page Button
-# {page} = Page number
-LastPageName: "Page {page}"
 LastPageMaterial: Paper
 # Number between 0-8
 LastPageLocation: 0
 
 # Next Page Button
-# {page} = Page number
-NextPageName: "Page {page}"
 NextPageMaterial: Paper
 # Number between 0-8
 NextPageLocation: 8
 
 # Last Song Button
-# {name} = Song name
-LastSongName: "Play {name}"
 LastSongMaterial: Feather
 # Number between 0-8
 LastSongLocation: 2
 
 # Next Song Button
-# {name} = Song name
-NextSongName: "Play {name}"
 NextSongMaterial: Feather
 # Number between 0-8
 NextSongLocation: 6
 
 # Stop Button
-# {name} = Song name
-StopName: "Stop Playing"
 StopMaterial: Barrier
 # Number between 0-8
 StopLocation: 4
 
 # Play Button
 # Replaces stop button when no music is playing
-# {name} = Song name
-PlayName: "Play {name}"
 PlayMaterial: Jukebox
 
 # Repeat Button
-# {name} = Song name
-RepeatName: "Repeat"
 RepeatMaterial: Arrow
 # Number between 0-8
 RepeatLocation: 1
 
 # Stop Repeat Button
 # Replaces repeat button when music is repeating
-# {name} = Song name
-StopRepeatName: "Disable Repeat"
 StopRepeatMaterial: Structure_Void
 
 # Shuffle Button
-# {name} = Song name
-ShuffleName: "Shuffle"
 ShuffleMaterial: Magenta_Glazed_Terracotta
 # Number between 0-8
 ShuffleLocation: 7
 
 # Disable Shuffle Button
 # Replaces shuffle button when music is shuffling
-# {name} = Song name
-StopShuffleName: "Disable Shuffle"
 StopShuffleMaterial: Structure_Void
 
 # Restart song to beginning if offline for specified amount of time (in seconds)
@@ -111,13 +88,6 @@ BossBar: true
 
 # How long should the BossBar be visible? (in seconds) (0 stays on while song is playing)
 BarVisibility: 0
-
-# BossBar Message
-# {name} = Song name
-# {cname} = Colored song name
-# {time} = Current time
-# {total} = Song length
-BarMessage: "&c&lPlaying {cname} &3&l - &f{time} &c&l- &f{total}"
 
 # How frequenty should the bar be updated (in ticks)
 # Increase this number if your server is lagging!
@@ -136,8 +106,3 @@ TitleVisibility: 5
 
 # Title fade in/out time (in ticks)
 TitleFade: 10
-
-# Title Message
-# {name} = Song name
-# {cname} = Colored song name
-TitleMessage: "&c&lPlaying {cname}"

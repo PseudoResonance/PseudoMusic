@@ -7,7 +7,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import io.github.pseudoresonance.pseudoapi.bukkit.Message.Errors;
+import io.github.pseudoresonance.pseudoapi.bukkit.Chat.Errors;
+import io.github.pseudoresonance.pseudoapi.bukkit.language.LanguageManager;
 import io.github.pseudoresonance.pseudoapi.bukkit.SubCommandExecutor;
 import io.github.pseudoresonance.pseudomusic.JukeboxController;
 import io.github.pseudoresonance.pseudomusic.PseudoMusic;
@@ -23,7 +24,7 @@ public class ResetSC implements SubCommandExecutor {
 					PseudoMusic.plugin.saveDefaultConfig();
 					PseudoMusic.plugin.reloadConfig();
 				} catch (Exception e) {
-					PseudoMusic.message.sendPluginError(sender, Errors.GENERIC);
+					PseudoMusic.plugin.getChat().sendPluginError(sender, Errors.GENERIC);
 					return;
 				}
 				PseudoMusic.getConfigOptions().reloadConfig();
@@ -37,13 +38,13 @@ public class ResetSC implements SubCommandExecutor {
 						JukeboxController.connect(p);
 					}
 					JukeboxController.start();
-					PseudoMusic.message.sendPluginMessage(sender, "Plugin config reset!");
+					PseudoMusic.plugin.getChat().sendPluginMessage(sender, LanguageManager.getLanguage(sender).getMessage("pseudoapi.config_reset"));
 				});
 				return;
 			});
 			return true;
 		} else {
-			PseudoMusic.message.sendPluginError(sender, Errors.NO_PERMISSION, "reset the config!");
+			PseudoMusic.plugin.getChat().sendPluginError(sender, Errors.NO_PERMISSION, LanguageManager.getLanguage(sender).getMessage("pseudoapi.permission_reset_config"));
 			return false;
 		}
 	}

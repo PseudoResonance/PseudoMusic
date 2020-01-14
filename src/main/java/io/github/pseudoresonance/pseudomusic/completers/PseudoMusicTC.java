@@ -16,8 +16,14 @@ public class PseudoMusicTC implements TabCompleter {
 			if (sender.hasPermission("pseudomusic.reload")) {
 				possible.add("reload");
 			}
+			if (sender.hasPermission("pseudomusic.reloadlocalization")) {
+				possible.add("reloadlocalization");
+			}
 			if (sender.hasPermission("pseudomusic.reset")) {
 				possible.add("reset");
+			}
+			if (sender.hasPermission("pseudomusic.resetlocalization")) {
+				possible.add("resetlocalization");
 			}
 			if (sender.hasPermission("pseudomusic.browse")) {
 				possible.add("browse");

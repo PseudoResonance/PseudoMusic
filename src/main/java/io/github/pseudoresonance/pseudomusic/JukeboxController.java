@@ -38,22 +38,17 @@ public class JukeboxController {
 	}
 	
 	public static void disconnect(Player p) {
-		if (Config.playerType == PlayerType.PRIVATE) {
-			jukeboxes.get(p.getName()).kill(true);
-			jukeboxes.remove(p.getName());
-		} else {
-			global.removePlayer(p);
-		}
+		Jukebox jb = jukeboxes.remove(p.getName());
+		if (jb != null)
+			jb.kill(true);
+		global.removePlayer(p);
 	}
 	
 	public static void kill() {
-		if (Config.playerType == PlayerType.PRIVATE) {
-			for (Jukebox j : jukeboxes.values()) {
-				j.kill(true);
-			}
-		} else {
-			global.kill();
+		for (Jukebox j : jukeboxes.values()) {
+			j.kill(true);
 		}
+		global.kill();
 	}
 	
 	public static void start() {
@@ -221,5 +216,11 @@ public class JukeboxController {
 			return null;
 		}
 	}
+	
+	public static enum PlayerType {
+		PRIVATE,
+		GLOBAL;
+	}
+
 
 }

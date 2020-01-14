@@ -10,12 +10,22 @@ commands:
     description: PseudoMusic Menu
     aliases: [music]
 permissions:
-  pseudomusic.reset:
-    description: Allows the player to reset the config
-    default: op
   pseudomusic.reload:
     description: Allows the player to reload the plugin
     default: op
+  pseudomusic.reset:
+    description: Allows the player to reset the config
+    default: op
+    children:
+      pseudomusic.reload: true
+  pseudomusic.reloadlocalization:
+    description: Allows the player to reload the localization
+    default: op
+  pseudomusic.resetlocalization:
+    description: Allows the player to reset the localization
+    default: op
+    children:
+      pseudomusic.reloadlocalization: true
   pseudomusic.browse:
     description: Allows the player to browse music
     default: true
@@ -36,6 +46,7 @@ permissions:
     default: op
     children:
       pseudomusic.reset: true
+      pseudomusic.resetlocalization: true
       pseudomusic.reload: true
       pseudomusic.browse: true
       pseudomusic.play: true

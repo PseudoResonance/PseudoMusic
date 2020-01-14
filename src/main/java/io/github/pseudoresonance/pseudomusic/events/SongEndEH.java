@@ -8,7 +8,7 @@ import com.xxmicloxx.NoteBlockAPI.event.SongEndEvent;
 import io.github.pseudoresonance.pseudomusic.Config;
 import io.github.pseudoresonance.pseudomusic.Jukebox;
 import io.github.pseudoresonance.pseudomusic.JukeboxController;
-import io.github.pseudoresonance.pseudomusic.PlayerType;
+import io.github.pseudoresonance.pseudomusic.JukeboxController.PlayerType;
 
 public class SongEndEH implements Listener {
 	

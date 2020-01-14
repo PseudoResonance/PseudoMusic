@@ -5,7 +5,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import io.github.pseudoresonance.pseudoapi.bukkit.Message.Errors;
+import io.github.pseudoresonance.pseudoapi.bukkit.Chat.Errors;
+import io.github.pseudoresonance.pseudoapi.bukkit.language.LanguageManager;
 import io.github.pseudoresonance.pseudoapi.bukkit.SubCommandExecutor;
 import io.github.pseudoresonance.pseudomusic.JukeboxController;
 import io.github.pseudoresonance.pseudomusic.PseudoMusic;
@@ -18,7 +19,7 @@ public class ReloadSC implements SubCommandExecutor {
 				try {
 					PseudoMusic.plugin.reloadConfig();
 				} catch (Exception e) {
-					PseudoMusic.message.sendPluginError(sender, Errors.GENERIC);
+					PseudoMusic.plugin.getChat().sendPluginError(sender, Errors.GENERIC);
 					return;
 				}
 				PseudoMusic.getConfigOptions().reloadConfig();
@@ -32,13 +33,13 @@ public class ReloadSC implements SubCommandExecutor {
 						JukeboxController.connect(p);
 					}
 					JukeboxController.start();
-					PseudoMusic.message.sendPluginMessage(sender, "Plugin config reloaded!");
+					PseudoMusic.plugin.getChat().sendPluginMessage(sender, LanguageManager.getLanguage(sender).getMessage("pseudoapi.config_reloaded"));
 				});
 				return;
 			});
 			return true;
 		} else {
-			PseudoMusic.message.sendPluginError(sender, Errors.NO_PERMISSION, "reload the config!");
+			PseudoMusic.plugin.getChat().sendPluginError(sender, Errors.NO_PERMISSION, LanguageManager.getLanguage(sender).getMessage("pseudoapi.permission_reload_config"));
 			return false;
 		}
 	}

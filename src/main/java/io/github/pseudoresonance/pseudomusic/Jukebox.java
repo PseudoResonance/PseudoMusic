@@ -1,6 +1,7 @@
 package io.github.pseudoresonance.pseudomusic;
 
 import java.util.Random;
+import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
@@ -13,6 +14,7 @@ import com.xxmicloxx.NoteBlockAPI.songplayer.RadioSongPlayer;
 import com.xxmicloxx.NoteBlockAPI.songplayer.SongPlayer;
 import com.xxmicloxx.NoteBlockAPI.model.SoundCategory;
 
+import io.github.pseudoresonance.pseudoapi.bukkit.language.LanguageManager;
 import io.github.pseudoresonance.pseudoapi.bukkit.playerdata.PlayerDataController;
 
 public class Jukebox {
@@ -28,14 +30,14 @@ public class Jukebox {
 	protected volatile boolean stopped = true;
 	protected volatile boolean cancelAutoRun = false;
 	private Random random = new Random();
+
+	static Pattern patternNow = Pattern.compile("\\{\\$3\\$\\}");
+	static Pattern patternTotal = Pattern.compile("\\{\\$4\\$\\}");
 	
 	Jukebox(Player player) {
 		this.player = player;
-		String barMessage = Config.barMessage;
-		barMessage = barMessage.replace("{name}", "None");
-		barMessage = barMessage.replace("{cname}", "None");
-		barMessage = barMessage.replace("{time}", "0:00");
-		barMessage = barMessage.replace("{total}", "0:00");
+		String none = LanguageManager.getLanguage(player).getMessage("pseudomusic.none");
+		String barMessage = LanguageManager.getLanguage(player).getMessage("pseudomusic.bossbar_name", none, none, "0:00", "0:00");
 		bossBar = Bukkit.getServer().createBossBar(barMessage, BarColor.WHITE, BarStyle.SOLID);
 		Bukkit.getScheduler().scheduleSyncDelayedTask(PseudoMusic.plugin, () -> {
 			Object o = PlayerDataController.getPlayerSetting(player.getUniqueId().toString(), "musicPlaying").join();
@@ -163,7 +165,7 @@ public class Jukebox {
 			if (songFile != null) {
 				i = getSongID();
 				i++;
-				if (i >= PseudoMusic.songs.size()) {
+				if (i >= PseudoMusic.songs.size() || i < 0) {
 					i = 0;
 				}
 			}
@@ -213,7 +215,7 @@ public class Jukebox {
 				if (repeat) {
 					if (songFile != null) {
 						i = getSongID();
-						if (i >= PseudoMusic.songs.size()) {
+						if (i >= PseudoMusic.songs.size() || i < 0) {
 							i = 0;
 						}
 					}
@@ -228,7 +230,7 @@ public class Jukebox {
 						if (songFile != null) {
 							i = getSongID();
 							i++;
-							if (i >= PseudoMusic.songs.size()) {
+							if (i >= PseudoMusic.songs.size() || i < 0) {
 								i = 0;
 							}
 						}
@@ -272,7 +274,7 @@ public class Jukebox {
 			if (songFile != null) {
 				i = getSongID();
 				i++;
-				if (i >= PseudoMusic.songs.size()) {
+				if (i >= PseudoMusic.songs.size() || i < 0) {
 					i = 0;
 				}
 			}
@@ -354,15 +356,11 @@ public class Jukebox {
 	
 	private void bossBar() {
 		if (Config.bossBar) {
-			String barMessage = Config.barMessage;
-			barMessage = barMessage.replace("{name}", songFile.getName());
-			barMessage = barMessage.replace("{cname}", songFile.getColor() + songFile.getName());
 			int now = (int) Math.ceil(((double) songPlayer.getTick()) / songPlayer.getSong().getSpeed());
 			int total = (int) Math.ceil((double) songPlayer.getSong().getLength() / songPlayer.getSong().getSpeed());
 			String nowS = format(now);
 			String totalS = format(total);
-			barMessage = barMessage.replace("{time}", nowS);
-			barMessage = barMessage.replace("{total}", totalS);
+			String barMessage = LanguageManager.getLanguage(player).getMessage("pseudomusic.bossbar_name", songFile.getName(), songFile.getColor() + songFile.getName(), nowS, totalS);
 			bossBar.setTitle(barMessage);
 			bossBar.setColor(songFile.getBarColor());
 			bossBar.setProgress(0.0);
@@ -383,9 +381,7 @@ public class Jukebox {
 	
 	private void title() {
 		if (Config.title) {
-			String titleMessage = Config.titleMessage;
-			titleMessage = titleMessage.replace("{name}", songFile.getName());
-			titleMessage = titleMessage.replace("{cname}", songFile.getColor() + songFile.getName());
+			String titleMessage = LanguageManager.getLanguage(player).getMessage("pseudomusic.title_name", songFile.getName(), songFile.getColor() + songFile.getName());
 			player.sendTitle("", titleMessage, Config.titleFade, Config.titleVisibility * 20, Config.titleFade);
 		}
 	}
@@ -471,9 +467,7 @@ class BarUpdate extends BukkitRunnable {
 	
 	BarUpdate(Jukebox j) {
 		this.j = j;
-		barMessage = Config.barMessage;
-		barMessage = barMessage.replace("{name}", j.songFile.getName());
-		barMessage = barMessage.replace("{cname}", j.songFile.getColor() + j.songFile.getName());
+		barMessage = LanguageManager.getLanguage(j.player).getMessage("pseudomusic.bossbar_name", j.songFile.getName(), j.songFile.getColor() + j.songFile.getName());
 	}
 	
 	public void run() {
@@ -483,8 +477,8 @@ class BarUpdate extends BukkitRunnable {
 			String nowS = Jukebox.format(now);
 			String totalS = Jukebox.format(total);
 			String output = barMessage;
-			output = output.replace("{time}", nowS);
-			output = output.replace("{total}", totalS);
+			output = Jukebox.patternNow.matcher(output).replaceFirst(nowS);
+			output = Jukebox.patternTotal.matcher(output).replaceFirst(totalS);
 			j.bossBar.setTitle(output);
 			double progress = (double) j.songPlayer.getTick() / j.songPlayer.getSong().getLength();
 			if (progress > 1.0) {

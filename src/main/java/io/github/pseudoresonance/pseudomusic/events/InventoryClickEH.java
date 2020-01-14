@@ -8,8 +8,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import io.github.pseudoresonance.pseudoapi.bukkit.Message.Errors;
-import io.github.pseudoresonance.pseudomusic.Config;
+import io.github.pseudoresonance.pseudoapi.bukkit.Chat.Errors;
+import io.github.pseudoresonance.pseudoapi.bukkit.language.LanguageManager;
 import io.github.pseudoresonance.pseudomusic.GUISetPage;
 import io.github.pseudoresonance.pseudomusic.JukeboxController;
 import io.github.pseudoresonance.pseudomusic.SongFile;
@@ -19,8 +19,7 @@ public class InventoryClickEH implements Listener {
 
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent e) {
-		String t = e.getView().getTitle();
-		if (t.equalsIgnoreCase(Config.interfaceName)) {
+		if (e.getView().getTopInventory().getHolder() instanceof GUISetPage.PseudoMusicHolder) {
 			e.setCancelled(true);
 			Player p = (Player) e.getWhoClicked();
 			ItemStack is = e.getCurrentItem();
@@ -30,47 +29,57 @@ public class InventoryClickEH implements Listener {
 					if (im.hasDisplayName()) {
 						String name = im.getDisplayName();
 						int page = PseudoMusic.getPage(p.getName());
-						if (name.startsWith("§1§f")) {
+						switch (name.substring(0, 4)) {
+						case "§1§f":
 							JukeboxController.lastSong(p);
 							GUISetPage.setPage(p, page, e.getInventory());
 							e.setCancelled(true);
-						} else if (name.startsWith("§2§f")) {
+							return;
+						case "§2§f":
 							JukeboxController.nextSong(p);
 							GUISetPage.setPage(p, page, e.getInventory());
 							e.setCancelled(true);
-						} else if (name.startsWith("§3§f")) {
+							return;
+						case "§3§f":
 							JukeboxController.stopSong(p);
 							GUISetPage.setPage(p, page, e.getInventory());
 							e.setCancelled(true);
-						} else if (name.startsWith("§4§f")) {
+							return;
+						case "§4§f":
 							JukeboxController.startPlayer(p);
 							GUISetPage.setPage(p, page, e.getInventory());
 							e.setCancelled(true);
-						} else if (name.startsWith("§5§f")) {
+							return;
+						case "§5§f":
 							JukeboxController.setRepeat(p, false);
 							GUISetPage.setPage(p, page, e.getInventory());
 							e.setCancelled(true);
-						} else if (name.startsWith("§6§f")) {
+							return;
+						case "§6§f":
 							JukeboxController.setRepeat(p, true);
 							GUISetPage.setPage(p, page, e.getInventory());
 							e.setCancelled(true);
-						} else if (name.startsWith("§7§f")) {
+							return;
+						case "§7§f":
 							JukeboxController.setShuffle(p, false);
 							GUISetPage.setPage(p, page, e.getInventory());
 							e.setCancelled(true);
-						} else if (name.startsWith("§8§f")) {
+							return;
+						case "§8§f":
 							JukeboxController.setShuffle(p, true);
 							GUISetPage.setPage(p, page, e.getInventory());
 							e.setCancelled(true);
-						} else if (name.startsWith("§9§f")) {
-							int o = page - 1;
-							GUISetPage.setPage(p, o, e.getInventory());
+							return;
+						case "§9§f":
+							GUISetPage.setPage(p, page - 1, e.getInventory());
 							e.setCancelled(true);
-						} else if (name.startsWith("§0§f")) {
-							int o = page + 1;
-							GUISetPage.setPage(p, o, e.getInventory());
+							return;
+						case "§0§f":
+							GUISetPage.setPage(p, page + 1, e.getInventory());
 							e.setCancelled(true);
-						} else if (is.getType().isRecord()) {
+							return;
+						}
+						if (is.getType().isRecord()) {
 							String songName = ChatColor.stripColor(name);
 							for (SongFile sf : PseudoMusic.getSongs()) {
 								if (sf.getName().equalsIgnoreCase(songName)) {
@@ -78,7 +87,7 @@ public class InventoryClickEH implements Listener {
 										JukeboxController.setSong(p, sf);
 										GUISetPage.setPage(p, page, e.getInventory());
 									} else {
-										PseudoMusic.message.sendPluginError(p, Errors.NO_PERMISSION, "select a song!");
+										PseudoMusic.plugin.getChat().sendPluginError(p, Errors.NO_PERMISSION, LanguageManager.getLanguage(p).getMessage("pseudomusic.permission_select_song"));
 									}
 									e.setCancelled(true);
 								}
