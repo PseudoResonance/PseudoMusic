@@ -10,6 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import io.github.pseudoresonance.pseudoapi.bukkit.Chat.Errors;
 import io.github.pseudoresonance.pseudoapi.bukkit.language.LanguageManager;
+import io.github.pseudoresonance.pseudomusic.Config;
 import io.github.pseudoresonance.pseudomusic.GUISetPage;
 import io.github.pseudoresonance.pseudomusic.JukeboxController;
 import io.github.pseudoresonance.pseudomusic.SongFile;
@@ -29,57 +30,40 @@ public class InventoryClickEH implements Listener {
 					if (im.hasDisplayName()) {
 						String name = im.getDisplayName();
 						int page = PseudoMusic.getPage(p.getName());
-						switch (name.substring(0, 4)) {
-						case "§1§f":
+						int slot = e.getSlot();
+						if (slot == Config.lastSongLocation) {
 							JukeboxController.lastSong(p);
 							GUISetPage.setPage(p, page, e.getInventory());
 							e.setCancelled(true);
-							return;
-						case "§2§f":
+						} else if (slot == Config.nextSongLocation) {
 							JukeboxController.nextSong(p);
 							GUISetPage.setPage(p, page, e.getInventory());
 							e.setCancelled(true);
-							return;
-						case "§3§f":
-							JukeboxController.stopSong(p);
+						} else if (slot == Config.stopLocation) {
+							if (JukeboxController.isPlaying(p)) {
+								JukeboxController.stopSong(p);
+								GUISetPage.setPage(p, page, e.getInventory());
+								e.setCancelled(true);
+							} else {
+								JukeboxController.startPlayer(p);
+								GUISetPage.setPage(p, page, e.getInventory());
+								e.setCancelled(true);
+							}
+						} else if (slot == Config.repeatLocation) {
+							JukeboxController.setRepeat(p, !JukeboxController.isRepeating(p));
 							GUISetPage.setPage(p, page, e.getInventory());
 							e.setCancelled(true);
-							return;
-						case "§4§f":
-							JukeboxController.startPlayer(p);
+						} else if (slot == Config.shuffleLocation) {
+							JukeboxController.setShuffle(p, !JukeboxController.isShuffling(p));
 							GUISetPage.setPage(p, page, e.getInventory());
 							e.setCancelled(true);
-							return;
-						case "§5§f":
-							JukeboxController.setRepeat(p, false);
-							GUISetPage.setPage(p, page, e.getInventory());
-							e.setCancelled(true);
-							return;
-						case "§6§f":
-							JukeboxController.setRepeat(p, true);
-							GUISetPage.setPage(p, page, e.getInventory());
-							e.setCancelled(true);
-							return;
-						case "§7§f":
-							JukeboxController.setShuffle(p, false);
-							GUISetPage.setPage(p, page, e.getInventory());
-							e.setCancelled(true);
-							return;
-						case "§8§f":
-							JukeboxController.setShuffle(p, true);
-							GUISetPage.setPage(p, page, e.getInventory());
-							e.setCancelled(true);
-							return;
-						case "§9§f":
+						} else if (slot == Config.lastPageLocation) {
 							GUISetPage.setPage(p, page - 1, e.getInventory());
 							e.setCancelled(true);
-							return;
-						case "§0§f":
+						} else if (slot == Config.nextPageLocation) {
 							GUISetPage.setPage(p, page + 1, e.getInventory());
 							e.setCancelled(true);
-							return;
-						}
-						if (is.getType().isRecord()) {
+						} else if (is.getType().isRecord()) {
 							String songName = ChatColor.stripColor(name);
 							for (SongFile sf : PseudoMusic.getSongs()) {
 								if (sf.getName().equalsIgnoreCase(songName)) {

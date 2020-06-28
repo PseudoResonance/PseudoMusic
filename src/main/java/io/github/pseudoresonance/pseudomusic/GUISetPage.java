@@ -49,41 +49,41 @@ public class GUISetPage {
 			if (PseudoMusic.getSongs().length > 1) {
 				if (p.hasPermission("pseudomusic.play")) {
 					if (lastSong != null) {
-						inv.setItem(Config.lastSongLocation, newStack(Config.lastSongMaterial, 1, "§1§f" + LanguageManager.getLanguage(p).getMessage("pseudomusic.interface_last_song_name", lastSong.getColor() + lastSong.getName()), lastSong.getLength()));
+						inv.setItem(Config.lastSongLocation, newStack(Config.lastSongMaterial, 1, LanguageManager.getLanguage(p).getMessage("pseudomusic.interface_last_song_name", lastSong.getColor() + lastSong.getName()), lastSong.getLength()));
 					}
 					if (nextSong != null) {
-						inv.setItem(Config.nextSongLocation, newStack(Config.nextSongMaterial, 1, "§2§f" + LanguageManager.getLanguage(p).getMessage("pseudomusic.interface_next_song_name", nextSong.getColor() + nextSong.getName()), nextSong.getLength()));
+						inv.setItem(Config.nextSongLocation, newStack(Config.nextSongMaterial, 1, LanguageManager.getLanguage(p).getMessage("pseudomusic.interface_next_song_name", nextSong.getColor() + nextSong.getName()), nextSong.getLength()));
 					}
 				}
 			}
 			if (JukeboxController.isPlaying(p)) {
 				if (p.hasPermission("pseudomusic.stop")) {
-					inv.setItem(Config.stopLocation, newStack(Config.stopMaterial, 1, "§3§f" + LanguageManager.getLanguage(p).getMessage("pseudomusic.interface_stop_name", currentSongName)));
+					inv.setItem(Config.stopLocation, newStack(Config.stopMaterial, 1, LanguageManager.getLanguage(p).getMessage("pseudomusic.interface_stop_name", currentSongName)));
 				}
 			} else {
 				if (p.hasPermission("pseudomusic.play")) {
-					inv.setItem(Config.stopLocation, newStack(Config.playMaterial, 1, "§4§f" + LanguageManager.getLanguage(p).getMessage("pseudomusic.interface_play_name", currentSongName)));
+					inv.setItem(Config.stopLocation, newStack(Config.playMaterial, 1, LanguageManager.getLanguage(p).getMessage("pseudomusic.interface_play_name", currentSongName)));
 				}
 			}
 			if (p.hasPermission("pseudomusic.repeat")) {
 				if (JukeboxController.isRepeating(p)) {
-					inv.setItem(Config.repeatLocation, newStack(Config.stopRepeatMaterial, 1, "§5§f" + LanguageManager.getLanguage(p).getMessage("pseudomusic.interface_stop_repeat_name", currentSongName)));
+					inv.setItem(Config.repeatLocation, newStack(Config.stopRepeatMaterial, 1, LanguageManager.getLanguage(p).getMessage("pseudomusic.interface_stop_repeat_name", currentSongName)));
 				} else {
-					inv.setItem(Config.repeatLocation, newStack(Config.repeatMaterial, 1, "§6§f" + LanguageManager.getLanguage(p).getMessage("pseudomusic.interface_repeat_name", currentSongName)));
+					inv.setItem(Config.repeatLocation, newStack(Config.repeatMaterial, 1, LanguageManager.getLanguage(p).getMessage("pseudomusic.interface_repeat_name", currentSongName)));
 				}
 			}
 			if (p.hasPermission("pseudomusic.shuffle")) {
 				if (JukeboxController.isShuffling(p)) {
-					inv.setItem(Config.shuffleLocation, newStack(Config.stopShuffleMaterial, 1, "§7§f" + LanguageManager.getLanguage(p).getMessage("pseudomusic.interface_stop_shuffle_name", currentSongName)));
+					inv.setItem(Config.shuffleLocation, newStack(Config.stopShuffleMaterial, 1, LanguageManager.getLanguage(p).getMessage("pseudomusic.interface_stop_shuffle_name", currentSongName)));
 				} else {
-					inv.setItem(Config.shuffleLocation, newStack(Config.shuffleMaterial, 1, "§8§f" + LanguageManager.getLanguage(p).getMessage("pseudomusic.interface_shuffle_name", currentSongName)));
+					inv.setItem(Config.shuffleLocation, newStack(Config.shuffleMaterial, 1, LanguageManager.getLanguage(p).getMessage("pseudomusic.interface_shuffle_name", currentSongName)));
 				}
 			}
 			if (total > 1) {
 				if (page < total)
-					inv.setItem(Config.nextPageLocation, newStack(Config.nextPageMaterial, 1, "§0§f" + LanguageManager.getLanguage(p).getMessage("pseudomusic.interface_next_page_name", page + 1)));
+					inv.setItem(Config.nextPageLocation, newStack(Config.nextPageMaterial, 1, LanguageManager.getLanguage(p).getMessage("pseudomusic.interface_next_page_name", page + 1)));
 				if (page > 1)
-					inv.setItem(Config.lastPageLocation, newStack(Config.lastPageMaterial, 1, "§9§f" + LanguageManager.getLanguage(p).getMessage("pseudomusic.interface_last_page_name", page - 1)));
+					inv.setItem(Config.lastPageLocation, newStack(Config.lastPageMaterial, 1, LanguageManager.getLanguage(p).getMessage("pseudomusic.interface_last_page_name", page - 1)));
 			}
 			int invIndex = 8;
 			for (int i = (page - 1) * 45; i < page * 45; i++) {
