@@ -6,7 +6,7 @@
 	<version>${revision}</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<revision>1.6.3</revision>
+		<revision>1.6.4</revision>
 		<lowerName>pseudomusic</lowerName>
 	</properties>
 	<build>
