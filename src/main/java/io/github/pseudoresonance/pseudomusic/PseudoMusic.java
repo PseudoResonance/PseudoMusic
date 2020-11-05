@@ -18,6 +18,7 @@ import io.github.pseudoresonance.pseudoapi.bukkit.CommandDescription;
 import io.github.pseudoresonance.pseudoapi.bukkit.HelpSC;
 import io.github.pseudoresonance.pseudoapi.bukkit.MainCommand;
 import io.github.pseudoresonance.pseudoapi.bukkit.PseudoAPI;
+import io.github.pseudoresonance.pseudoapi.bukkit.PseudoAPIExpansion;
 import io.github.pseudoresonance.pseudoapi.bukkit.PseudoPlugin;
 import io.github.pseudoresonance.pseudoapi.bukkit.PseudoUpdater;
 import io.github.pseudoresonance.pseudoapi.bukkit.data.PluginConfig;
@@ -88,6 +89,8 @@ public class PseudoMusic extends PseudoPlugin implements Listener {
 				initializeMetrics();
 			});
 		});
+		if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null)
+			new PseudoMusicExpansion(this).register();
 	}
 
 	@Override
@@ -97,7 +100,7 @@ public class PseudoMusic extends PseudoPlugin implements Listener {
 	}
 
 	private void initializeMetrics() {
-		metrics = new Metrics(this);
+		metrics = new Metrics(this, 6260);
 		metrics.addCustomChart(new Metrics.SimplePie("num_songs", () -> {
 			int i = songs.size() / 20 * 20;
 			return i + "-" + (i + 20);
