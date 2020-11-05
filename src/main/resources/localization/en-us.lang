@@ -45,3 +45,7 @@ pseudomusic:
   permission_repeat: "set repeat"
   permission_shuffle: "set shuffle"
   permission_stop: "stop playing music"
+  placeholder_not_player: "Not a player"
+  placeholder_true: "True"
+  placeholder_false: "False"
+  placeholder_none: "None"

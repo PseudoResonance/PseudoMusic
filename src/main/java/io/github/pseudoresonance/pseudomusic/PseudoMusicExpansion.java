@@ -49,14 +49,14 @@ public class PseudoMusicExpansion extends PlaceholderExpansion {
 					if (JukeboxController.isPlaying(player))
 						return JukeboxController.getSong(player).getName();
 					else
-						return LanguageManager.getLanguage(player).getMessage("pseudoplaceholders.none");
+						return LanguageManager.getLanguage(player).getMessage("pseudomusic.placeholder_none");
 				} else
-					return LanguageManager.getLanguage(player).getMessage("pseudoplaceholders.not_player");
+					return LanguageManager.getLanguage(player).getMessage("pseudomusic.placeholder_not_player");
 			} else {
 				if (JukeboxController.getJukebox().isPlaying())
 					return JukeboxController.getJukebox().getSong().getName();
 				else
-					return LanguageManager.getLanguage(player).getMessage("pseudoplaceholders.none");
+					return LanguageManager.getLanguage(player).getMessage("pseudomusic.placeholder_none");
 			}
 		case "next_song":
 			if (Config.playerType == PlayerType.PRIVATE) {
@@ -64,14 +64,14 @@ public class PseudoMusicExpansion extends PlaceholderExpansion {
 					if (JukeboxController.isPlaying(player))
 						return JukeboxController.getNextSong(player).getName();
 					else
-						return LanguageManager.getLanguage(player).getMessage("pseudoplaceholders.none");
+						return LanguageManager.getLanguage(player).getMessage("pseudomusic.placeholder_none");
 				} else
-					return LanguageManager.getLanguage(player).getMessage("pseudoplaceholders.not_player");
+					return LanguageManager.getLanguage(player).getMessage("pseudomusic.placeholder_not_player");
 			} else {
 				if (JukeboxController.getJukebox().isPlaying())
 					return JukeboxController.getJukebox().getNextSong().getName();
 				else
-					return LanguageManager.getLanguage(player).getMessage("pseudoplaceholders.none");
+					return LanguageManager.getLanguage(player).getMessage("pseudomusic.placeholder_none");
 			}
 		case "last_song":
 			if (Config.playerType == PlayerType.PRIVATE) {
@@ -79,59 +79,59 @@ public class PseudoMusicExpansion extends PlaceholderExpansion {
 					if (JukeboxController.isPlaying(player))
 						return JukeboxController.getLastSong(player).getName();
 					else
-						return LanguageManager.getLanguage(player).getMessage("pseudoplaceholders.none");
+						return LanguageManager.getLanguage(player).getMessage("pseudomusic.placeholder_none");
 				} else
-					return LanguageManager.getLanguage(player).getMessage("pseudoplaceholders.not_player");
+					return LanguageManager.getLanguage(player).getMessage("pseudomusic.placeholder_not_player");
 			} else {
 				if (JukeboxController.getJukebox().isPlaying())
 					return JukeboxController.getJukebox().getLastSong().getName();
 				else
-					return LanguageManager.getLanguage(player).getMessage("pseudoplaceholders.none");
+					return LanguageManager.getLanguage(player).getMessage("pseudomusic.placeholder_none");
 			}
 		case "playing":
 			if (Config.playerType == PlayerType.PRIVATE) {
 				if (player != null) {
 					if (JukeboxController.isPlaying(player))
-						return LanguageManager.getLanguage(player).getMessage("pseudoplaceholders.true");
+						return LanguageManager.getLanguage(player).getMessage("pseudomusic.placeholder_true");
 					else
-						return LanguageManager.getLanguage(player).getMessage("pseudoplaceholders.false");
+						return LanguageManager.getLanguage(player).getMessage("pseudomusic.placeholder_false");
 				} else
-					return LanguageManager.getLanguage(player).getMessage("pseudoplaceholders.not_player");
+					return LanguageManager.getLanguage(player).getMessage("pseudomusic.placeholder_not_player");
 			} else {
 				if (JukeboxController.getJukebox().isPlaying())
-					return LanguageManager.getLanguage(player).getMessage("pseudoplaceholders.true");
+					return LanguageManager.getLanguage(player).getMessage("pseudomusic.placeholder_true");
 				else
-					return LanguageManager.getLanguage(player).getMessage("pseudoplaceholders.false");
+					return LanguageManager.getLanguage(player).getMessage("pseudomusic.placeholder_false");
 			}
 		case "repeating":
 			if (Config.playerType == PlayerType.PRIVATE) {
 				if (player != null) {
 					if (JukeboxController.isRepeating(player))
-						return LanguageManager.getLanguage(player).getMessage("pseudoplaceholders.true");
+						return LanguageManager.getLanguage(player).getMessage("pseudomusic.placeholder_true");
 					else
-						return LanguageManager.getLanguage(player).getMessage("pseudoplaceholders.false");
+						return LanguageManager.getLanguage(player).getMessage("pseudomusic.placeholder_false");
 				} else
-					return LanguageManager.getLanguage(player).getMessage("pseudoplaceholders.not_player");
+					return LanguageManager.getLanguage(player).getMessage("pseudomusic.placeholder_not_player");
 			} else {
 				if (JukeboxController.getJukebox().isRepeating())
-					return LanguageManager.getLanguage(player).getMessage("pseudoplaceholders.true");
+					return LanguageManager.getLanguage(player).getMessage("pseudomusic.placeholder_true");
 				else
-					return LanguageManager.getLanguage(player).getMessage("pseudoplaceholders.false");
+					return LanguageManager.getLanguage(player).getMessage("pseudomusic.placeholder_false");
 			}
 		case "shuffling":
 			if (Config.playerType == PlayerType.PRIVATE) {
 				if (player != null) {
 					if (JukeboxController.isShuffling(player))
-						return LanguageManager.getLanguage(player).getMessage("pseudoplaceholders.true");
+						return LanguageManager.getLanguage(player).getMessage("pseudomusic.placeholder_true");
 					else
-						return LanguageManager.getLanguage(player).getMessage("pseudoplaceholders.false");
+						return LanguageManager.getLanguage(player).getMessage("pseudomusic.placeholder_false");
 				} else
-					return LanguageManager.getLanguage(player).getMessage("pseudoplaceholders.not_player");
+					return LanguageManager.getLanguage(player).getMessage("pseudomusic.placeholder_not_player");
 			} else {
 				if (JukeboxController.getJukebox().isShuffling())
-					return LanguageManager.getLanguage(player).getMessage("pseudoplaceholders.true");
+					return LanguageManager.getLanguage(player).getMessage("pseudomusic.placeholder_true");
 				else
-					return LanguageManager.getLanguage(player).getMessage("pseudoplaceholders.false");
+					return LanguageManager.getLanguage(player).getMessage("pseudomusic.placeholder_false");
 			}
 		default:
 			return "";
